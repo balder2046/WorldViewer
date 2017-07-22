@@ -1,3 +1,6 @@
+# CMake settings
+cmake-build-*
+.idea
 # Prerequisites
 *.d
 
