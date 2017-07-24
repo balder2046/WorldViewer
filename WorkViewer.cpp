@@ -1,8 +1,8 @@
 // WorkViewer.cpp : Defines the entry point for the console application.
 //
 
+#include "GL/glew.h"
 #include "GL/glut.h"
-#include "GL/gl.h"
 #include <string.h>
 #include <iostream>
 #include <fstream>

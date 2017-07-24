@@ -4,13 +4,14 @@
 #define __ZED3D_INCLUDE__
 
 #include <iostream>
-
+#include "glm/glm.hpp"
+#include "GL/glew.h"
 #include "utils.hpp"
 
 #include <stdio.h>   // Header File For Standard Input/Output
-#include <GL/gl.h>   // Header File For The OpenGL32 Library
-#include <GL/glut.h>   // Header File For The GLu32 Library
 
+#include "GLSLShader.h"
+#include <GL/glut.h>   // Header File For The GLu32 Library
 struct color {
     float r, g, b;
 
@@ -205,11 +206,15 @@ class Zed3D {
 public:
     Zed3D();
     ~Zed3D();
-
-    void draw();
+    void init();
+    void draw(glm::mat4 &pv);
     void setPath(sl::Transform &Path,std::vector<sl::Translation> path_history);
     std::vector<double3color> body_io;
 	std::vector<sl::Translation> path_mem;
+    GLuint vaoID;
+    GLuint vboID;
+    GLSLShader shader;
+
 };
 
 #endif /* __ZED3D_INCLUDE__ */

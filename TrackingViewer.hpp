@@ -2,6 +2,7 @@
 #ifndef __CLOUD_VIEWER_INCLUDE__
 #define __CLOUD_VIEWER_INCLUDE__
 
+#include "GL/glew.h"
 #include "utils.hpp"
 
 #include <math.h>
@@ -11,7 +12,11 @@
 #include "ZEDModel.hpp"    /* OpenGL Utility Toolkit header */
 #include <sl/Camera.hpp>
 #include "opencv2/opencv.hpp"
+#include "glm/common.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 class TrackBallCamera {
 public:
 
@@ -46,6 +51,9 @@ private:
 	float angleX;
 
 	void setAngleX();
+public:
+	  glm::mat4 P;
+	glm::mat4 V;
 };
 
 class TrackingViewer {
@@ -70,6 +78,7 @@ public:
 
 	void exit();
 	std::mutex path_locker;
+
 
 private:
 	static TrackingViewer* currentInstance_;
@@ -118,6 +127,7 @@ private:
 
 	bool isInit;
 	bool run;
+
 };
 
 

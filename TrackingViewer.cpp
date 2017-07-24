@@ -39,6 +39,8 @@ void TrackBallCamera::show() {
     gluLookAt(position.x, position.y, position.z,
             lookAt.x, lookAt.y, lookAt.z,
             0.0, 1.0, 0.0);
+    P = glm::lookAtRH(glm::tvec3<float>(position.x,position.y,position.z),glm::tvec3<float>(lookAt.x,lookAt.y,
+    lookAt.z),glm::tvec3<float>(0.0,1.0,0.0));
 }
 
 void TrackBallCamera::rotation(float angle, vect3 v) {
@@ -177,6 +179,8 @@ void TrackingViewer::init() {
     char *argv[1];
     argv[0] = '\0';
     int argc = 1;
+
+
     glutInit(&argc, argv);
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -184,19 +188,24 @@ void TrackingViewer::init() {
     int w = glutGet(GLUT_SCREEN_WIDTH);
     int h = glutGet(GLUT_SCREEN_HEIGHT);
     glutInitWindowSize(w/2, h/2);
-	glutInitContextVersion(3, 0);
-	//glutInitContextFlags(GLUT_COMPATIBILITY_PROFILE);
+    glutInitContextVersion(3, 0);
+	//glutInitContextFlags(GLUT_CORE_PROFILE | GLUT_DEBUG);
     glutCreateWindow("WorldViewer");
-	g_Terrain.Init();
+    glewExperimental = GL_TRUE;
+    glewInit();
 
+	g_Terrain.Init();
+    zed3d.init();
 
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glMatrixMode(GL_PROJECTION);
     gluPerspective(75.0, 1.0, .002, 25.0);
+    camera.P = glm::perspectiveRH(75.0 / 18.0 * 3.1415,1.0,.002,25.0);
     glMatrixMode(GL_MODELVIEW);
     gluLookAt(0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 0.0, .10, 0.0);
+    camera.V = glm::lookAt(glm::tvec3<float>(0.0,0.0,6.0),glm::tvec3<float>(0.0,0.0,0.0),glm::tvec3<float>(0.0,1.0,0.0));
 
     glShadeModel(GL_SMOOTH);
     glDepthFunc(GL_LEQUAL);
@@ -300,6 +309,8 @@ void TrackingViewer::updateZEDPosition(sl::Transform pose) {
 }
 
 void TrackingViewer::redraw() {
+
+    GLenum code = glGetError();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glPushMatrix();
@@ -313,15 +324,15 @@ void TrackingViewer::redraw() {
     glClearColor(50.f/255.f, 95.f/255.f, 90.f / 255.f, 130.0f);
 
     path_locker.lock();
-	
+
     drawGridPlan();
 	
     drawRepere();
-	
-   // zed3d.draw();
+	glm::mat4 pv = camera.P * camera.V;
+   zed3d.draw(pv);
 	g_Terrain.Draw();
 	
-    printText();
+   // printText();
     path_locker.unlock();
     glutSwapBuffers();
 }

@@ -1,10 +1,14 @@
+#include <GL/glew.h>
+#include <glm/detail/type_mat.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "ZEDModel.hpp"
 
 Zed3D::Zed3D() {
     body_io.clear();
 	path_mem.clear();
-    sl::Transform path;
-    setPath(path, path_mem);
+    vaoID = 0;
+    vboID = 0;
+
 }
 
 Zed3D::~Zed3D() {
@@ -38,12 +42,31 @@ void Zed3D::setPath(sl::Transform &Path,std::vector<sl::Translation> path_histor
     }
 
 	path_mem = path_history;
+    glBindVertexArray(vaoID);
+    glBindBuffer(vboID,GL_ARRAY_BUFFER);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(double3color) * body_io.size(), &body_io[0], GL_DYNAMIC_DRAW);
+    //enable vertex attribute array for position
+    glEnableVertexAttribArray(shader["vVertex"]);
+    int stride = sizeof(double3color);
+    glVertexAttribPointer(shader["vVertex"], 3, GL_FLOAT, GL_FALSE, stride, 0);
+    //enable vertex attribute array for colour
+    glEnableVertexAttribArray(shader["vColor"]);
+    glVertexAttribPointer(shader["vColor"], 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid*)offsetof(double3color,r ));
 
 }
 
-void Zed3D::draw() {
+void Zed3D::draw(glm::mat4 &pm) {
   //glPushMatrix();
 
+    shader.Use();
+
+    glBindVertexArray(vaoID);
+  //  const GLubyte *buf = gluErrorString(code);
+    glUniformMatrix4fv(shader("MVP"), 1, GL_FALSE, glm::value_ptr(pm));
+    glDrawArrays(GL_TRIANGLES,0,body_io.size() / 3);
+    shader.UnUse();
+    return;
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < NB_ALLUMINIUM_TRIANGLES * 3; i++) {
         double3color tmp = body_io.at(i);
@@ -75,4 +98,24 @@ void Zed3D::draw() {
 
 
 //    glPopMatrix();
+}
+
+void Zed3D::init() {
+    sl::Transform path;
+    GLuint tt;
+    glGenVertexArrays(1,&tt);
+    glGenVertexArrays(1,&vaoID);
+    glGenBuffers(1,&vboID);
+    shader.LoadFromFile(GL_VERTEX_SHADER, "shaders/shader.vert");
+    shader.LoadFromFile(GL_FRAGMENT_SHADER, "shaders/shader.frag");
+    //compile and link shader
+    shader.CreateAndLinkProgram();
+    shader.Use();
+    //add attributes and uniforms
+    shader.AddAttribute("vVertex");
+    shader.AddAttribute("vColor");
+    shader.AddUniform("MVP");
+    shader.UnUse();
+
+    setPath(path, path_mem);
 }
