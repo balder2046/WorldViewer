@@ -47,15 +47,17 @@ RenderTextureFBO *g_pRenderTextureFBO = 0;
 CScreenSizeQuad *g_pScreenQuad = 0;
 Texture g_Texture1;
 
-
+GLuint g_testText;
 
 //OpenGL initialization
 void OnInit() {
 	Mat mat;
 	mat = imread("test.bmp", IMREAD_COLOR);
-
+    glGenTextures(1,&g_testText);
+    glBindTexture(GL_TEXTURE_2D,g_testText);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,256,256,0,GL_RGB,GL_UNSIGNED_BYTE,0);
 	GL_CHECK_ERRORS
-	g_pRenderTextureFBO = new RenderTextureFBO(128, 128);
+	g_pRenderTextureFBO = new RenderTextureFBO(256, 256);
     g_pRenderTextureFBO->Init();
 	GL_CHECK_ERRORS
 	g_pScreenQuad = new CScreenSizeQuad();
@@ -144,6 +146,9 @@ void OnResize(int w, int h) {
 
 //display callback function
 void OnRender() {
+	glActiveTexture(GL_TEXTURE0);
+
+	glEnable(GL_TEXTURE);
     g_pRenderTextureFBO->Use();
 	//clear the colour and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -164,14 +169,13 @@ void OnRender() {
 
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glClearColor(1, 0, 0, 0);
-	glBindTexture(GL_TEXTURE_2D, g_pRenderTextureFBO->getTex());
+	g_pRenderTextureFBO->CopyToTexture(g_Texture1.m_iTextureIndex);
+	glBindTexture(GL_TEXTURE_2D, g_Texture1.m_iTextureIndex);
 
 	int code = glGetError();
 	char *buf = (char *)gluErrorString(code);
 	printf(buf);
-    glActiveTexture(GL_TEXTURE0);
 
-    glEnable(GL_TEXTURE);
 	//g_Texture1.useTexture();
 	g_pScreenQuad->Render(0);
 	//swap front and back buffers to show the rendered result

@@ -83,14 +83,15 @@ bool RenderTextureFBO::CopyToTexture(GLuint texid)
 	
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
 	glBindTexture(GL_TEXTURE_2D, texid);
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texid, 0);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texid, 0);
 	glBindTexture(GL_TEXTURE_2D, renderTextureID);
 	GLint size[4];
 	glGetIntegerv(GL_VIEWPORT, size);
 	glViewport(0, 0, m_iwidth, m_iheight);
 	g_ScreenQuad->Render(NULL);
-	glBindTexture(GL_TEXTURE_2D, renderTextureID);
+    glBindTexture(GL_TEXTURE_2D, renderTextureID);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTextureID, 0);
 	glViewport(size[0], size[1], size[2], size[3]);
-	return true;
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    return true;
 }

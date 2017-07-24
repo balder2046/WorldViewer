@@ -67,7 +67,7 @@ link_directories(${CUDA_LIBRARY_DIRS})
 link_directories(${OpenCV_LIBRARY_DIRS})
 
 #FILE(GLOB_RECURSE SRC_FILES "*.cpp")
-set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp WorkViewer.cpp ShaderProgram.cpp ShaderProgram.h FrameBuffer.cpp GLSLShader.cpp
+set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp main.cpp ShaderProgram.cpp ShaderProgram.h FrameBuffer.cpp GLSLShader.cpp
         Grid.cpp Mirror.cpp Quad.cpp RenderableObject.cpp RenderTextureFBO.cpp ScreenSizeQuad.cpp
         ShaderProgram.cpp Terrain.cpp TestTri.cpp UnitColorCube.cpp Texture.cpp)
 add_executable(WorldViewer ${SRC_FILES})
