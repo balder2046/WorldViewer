@@ -1,5 +1,8 @@
+#include "stdafx.h"
 #include "TrackingViewer.hpp"
-
+#include "Terrain.h"
+using namespace TRN;
+Terrain g_Terrain;
 static void safe_glutBitmapString(void *font, const char *str) {
     for (size_t x = 0; x < strlen(str); ++x)
         glutBitmapCharacter(font, str[x]);
@@ -181,11 +184,13 @@ void TrackingViewer::init() {
 
     int w = glutGet(GLUT_SCREEN_WIDTH);
     int h = glutGet(GLUT_SCREEN_HEIGHT);
-    glutInitWindowSize(w, h);
+    glutInitWindowSize(w/2, h/2);
+	glutInitContextVersion(3, 0);
+	//glutInitContextFlags(GLUT_COMPATIBILITY_PROFILE);
+    glutCreateWindow("WorldViewer");
+	g_Terrain.Init();
 
-    glutCreateWindow("ZED Tracking Viewer");
 
-    glewInit();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
@@ -305,12 +310,17 @@ void TrackingViewer::redraw() {
     glDisable(GL_LIGHTING);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glClearColor(0.12, 0.12, 0.12, 1.0f);
+    glClearColor(50.f/255.f, 95.f/255.f, 90.f / 255.f, 130.0f);
 
     path_locker.lock();
+	
     drawGridPlan();
+	
     drawRepere();
-    zed3d.draw();
+	
+   // zed3d.draw();
+	g_Terrain.Draw();
+	
     printText();
     path_locker.unlock();
     glutSwapBuffers();

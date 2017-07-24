@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ZEDModel.hpp"
 
 Zed3D::Zed3D() {
@@ -42,7 +43,7 @@ void Zed3D::setPath(sl::Transform &Path,std::vector<sl::Translation> path_histor
 }
 
 void Zed3D::draw() {
-    glPushMatrix();
+  //glPushMatrix();
 
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < NB_ALLUMINIUM_TRIANGLES * 3; i++) {
@@ -71,7 +72,8 @@ void Zed3D::draw() {
 		}
 		glEnd();
 	}
+	
 
 
-    glPopMatrix();
+//    glPopMatrix();
 }

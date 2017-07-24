@@ -26,6 +26,7 @@ ELSE() # Linux
     find_package(ZED 2.0 REQUIRED)
     find_package(GLUT REQUIRED)
     find_package(GLEW REQUIRED)
+        find_package(OpenGL REQUIRED)
 
     ##For Jetson, OpenCV4Tegra is based on OpenCV2.4
     exec_program(uname ARGS -p OUTPUT_VARIABLE CMAKE_SYSTEM_NAME2)
@@ -55,6 +56,7 @@ include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${GLUT_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS})
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${OpenGL_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 link_directories(${ZED_LIBRARY_DIR})
@@ -65,7 +67,7 @@ link_directories(${CUDA_LIBRARY_DIRS})
 link_directories(${OpenCV_LIBRARY_DIRS})
 
 #FILE(GLOB_RECURSE SRC_FILES "*.cpp")
-set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp main.cpp)
+set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp main.cpp ShaderProgram.cpp ShaderProgram.h)
 add_executable(WorldViewer ${SRC_FILES})
 # message(WARNING ${OpenCV_LIBRARIES})
 target_link_libraries(WorldViewer ${ZED_LIBRARIES} ${OpenCV_LIBRARIES} ${GLUT_LIBRARY}
