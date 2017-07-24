@@ -228,6 +228,7 @@ void getColor(int num_segments, int i, float &c1, float &c2, float &c3) {
 }
 
 void TrackingViewer::drawRepere() {
+    return;
     int num_segments = 60;
     float rad = 0.2;
 

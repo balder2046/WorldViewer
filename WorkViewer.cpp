@@ -1,9 +1,8 @@
 // WorkViewer.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
-#include "gl/glut.h"
-#include "gl/gl.h"
+#include "GL/glut.h"
+#include "GL/gl.h"
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -40,7 +39,7 @@ void transformPose(sl::Transform &pose, float tx);
 int main(int argc,char **argv)
 {
 	//return mainMirror(argc, argv);
-	return mainTestTri(argc, argv);
+	//return mainTestTri(argc, argv);
 
 	// Open the ZED
 		// Initialize OpenGL viewer
