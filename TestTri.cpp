@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TestTri.h"
 
 #include <GL/glew.h>
@@ -57,6 +56,7 @@ void OnInit() {
 
 	GL_CHECK_ERRORS
 	g_pRenderTextureFBO = new RenderTextureFBO(128, 128);
+    g_pRenderTextureFBO->Init();
 	GL_CHECK_ERRORS
 	g_pScreenQuad = new CScreenSizeQuad();
 	GL_CHECK_ERRORS
@@ -136,6 +136,7 @@ void OnShutdown() {
 //resize event handler
 void OnResize(int w, int h) {
 	//set the viewport size
+
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 	//setup the projection matrix
 	P = glm::ortho(-1, 1, -1, 1);
@@ -143,7 +144,7 @@ void OnResize(int w, int h) {
 
 //display callback function
 void OnRender() {
-	g_pRenderTextureFBO->Use();
+    g_pRenderTextureFBO->Use();
 	//clear the colour and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -158,11 +159,20 @@ void OnRender() {
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
 	//unbind the shader
 	shader.UnUse();
+
 	g_pRenderTextureFBO->UnUse();
+
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glClearColor(1, 0, 0, 0);
-	//glBindTexture(GL_TEXTURE_2D, g_pRenderTextureFBO->getTex());
-	g_Texture1.useTexture();
+	glBindTexture(GL_TEXTURE_2D, g_pRenderTextureFBO->getTex());
+
+	int code = glGetError();
+	char *buf = (char *)gluErrorString(code);
+	printf(buf);
+    glActiveTexture(GL_TEXTURE0);
+
+    glEnable(GL_TEXTURE);
+	//g_Texture1.useTexture();
 	g_pScreenQuad->Render(0);
 	//swap front and back buffers to show the rendered result
 	glutSwapBuffers();

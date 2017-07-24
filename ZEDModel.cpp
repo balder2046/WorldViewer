@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ZEDModel.hpp"
 
 Zed3D::Zed3D() {

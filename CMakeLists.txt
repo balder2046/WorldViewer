@@ -43,7 +43,7 @@ ELSE() # Linux
     endif()
 
     SET(SPECIAL_OS_LIBS "pthread" "X11")
-    add_definitions(-std=c++0x -O3 -pthread)
+    add_definitions(-std=c++0x -O0 -pthread)
 ENDIF(WIN32)
 set(OpenCV_DIR "/home/ad/work/opencv/build/")
 find_package(OpenCV ${VERSION_REQ_OCV} REQUIRED)
@@ -67,7 +67,9 @@ link_directories(${CUDA_LIBRARY_DIRS})
 link_directories(${OpenCV_LIBRARY_DIRS})
 
 #FILE(GLOB_RECURSE SRC_FILES "*.cpp")
-set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp main.cpp ShaderProgram.cpp ShaderProgram.h)
+set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp main.cpp ShaderProgram.cpp ShaderProgram.h FrameBuffer.cpp GLSLShader.cpp
+        Grid.cpp Mirror.cpp Quad.cpp RenderableObject.cpp RenderTextureFBO.cpp ScreenSizeQuad.cpp
+        ShaderProgram.cpp Terrain.cpp TestTri.cpp UnitColorCube.cpp Texture.cpp)
 add_executable(WorldViewer ${SRC_FILES})
 # message(WARNING ${OpenCV_LIBRARIES})
 target_link_libraries(WorldViewer ${ZED_LIBRARIES} ${OpenCV_LIBRARIES} ${GLUT_LIBRARY}

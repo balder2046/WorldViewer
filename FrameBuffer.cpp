@@ -1,6 +1,5 @@
-#include "stdafx.h"
 #include "FrameBuffer.h"
-#include "gl/glew.h"
+#include "GL/glew.h"
 CFrameBuffer::CFrameBuffer()
 {
 	m_iFrameIndex = 0;

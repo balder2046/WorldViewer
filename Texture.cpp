@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <GL/glew.h>
 #include "Texture.h"
 #include <vector>
@@ -30,9 +29,10 @@ void Texture::FillWithMat(const cv::Mat& mat)
 			vecBuffer[3 * index + 2] = buf[iX][2];
 		}
 	}
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, mat.cols , mat.rows, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, &vecBuffer[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols , mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, &vecBuffer[0]);
 	int code = glGetError();
 	char *buf = (char *)gluErrorString(code);
+    printf(buf);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }

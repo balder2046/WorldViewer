@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TrackingViewer.hpp"
 #include "Terrain.h"
 using namespace TRN;

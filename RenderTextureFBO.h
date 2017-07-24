@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "gl/glew.h"
+#include "GL/glew.h"
 class RenderTextureFBO
 {
 public:
@@ -18,4 +18,6 @@ public:
 public:
 	void Use();
 	void UnUse();
+public:
+	GLint m_size[4];
 };

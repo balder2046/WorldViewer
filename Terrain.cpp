@@ -1,8 +1,8 @@
-﻿#include "stdafx.h"
-
+﻿
 #include "Terrain.h"
-#include "gl/glut.h"
-#include "gl/gl.h"
+#include "GL/glew.h"
+#include "GL/glut.h"
+#include "GL/gl.h"
 #include "Texture.h"
 #include "opencv/highgui.h"
 #include <opencv2/imgcodecs.hpp>

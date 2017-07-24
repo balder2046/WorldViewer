@@ -1,5 +1,4 @@
-﻿#include "stdafx.h"
-#include "gl/glew.h"
+﻿#include "GL/glew.h"
 #include "RenderTextureFBO.h"
 #include "ScreenSizeQuad.h"
 
@@ -8,6 +7,10 @@ RenderTextureFBO::RenderTextureFBO(int width, int height)
 	m_iwidth = width;
 	m_iheight = height;
 	fboID = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		m_size[i] = 0;
+	}
 }
 CScreenSizeQuad *g_ScreenQuad = 0;
 bool RenderTextureFBO::Init()
@@ -62,13 +65,16 @@ bool RenderTextureFBO::Init()
 
 void RenderTextureFBO::Use()
 {
-	//enable FBO 
+	//enable FBO
+	glGetIntegerv(GL_VIEWPORT,m_size);
+	glViewport(0,0,m_iwidth,m_iheight);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
 	//render to colour attachment 0
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 }
 void RenderTextureFBO::UnUse()
 {
+	glViewport(m_size[0],m_size[1],m_size[2],m_size[3]);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glDrawBuffer(GL_BACK_LEFT);
 }

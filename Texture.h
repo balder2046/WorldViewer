@@ -1,6 +1,6 @@
 #pragma once
-#include "gl/glut.h"
-#include "gl/GL.h"
+#include "GL/glut.h"
+#include "GL/gl.h"
 #include "opencv2/core.hpp"
 class Texture
 {

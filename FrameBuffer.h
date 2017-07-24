@@ -1,6 +1,5 @@
 #pragma once
-#include "gl/glew.h"
-#include "gl/gl.h"
+#include "GL/glew.h"
 class CFrameBuffer
 {
 public:

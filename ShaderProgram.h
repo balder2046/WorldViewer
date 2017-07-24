@@ -5,7 +5,6 @@
 #ifndef WORLDVIEWER_SHADERPROGRAM_H
 #define WORLDVIEWER_SHADERPROGRAM_H
 #include <string>
-#include <GL/gl.h>
 #include "GL/glew.h"
 class ShaderProgram {
 public:

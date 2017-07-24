@@ -1,5 +1,5 @@
 #pragma once
-#include "renderableobject.h"
+#include "RenderableObject.h"
 #include <glm/glm.hpp>
 
 class CQuad :

@@ -38,7 +38,7 @@
 // Sample includes
 #include "TrackingViewer.hpp"
 
-
+#include "TestTri.h"
 //// Using std namespace
 using namespace std;
 
@@ -66,7 +66,7 @@ void parse_args(int argc, char **argv, sl::InitParameters &initParameters);
 
 
 int main(int argc, char **argv) {
-
+    return mainTestTri(argc,argv);
 	// Setup configuration parameters for the ZED
     sl::InitParameters initParameters;
     initParameters.camera_resolution = sl::RESOLUTION_HD720;
