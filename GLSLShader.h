@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 #include <map>
 #include <string>
-
+#include "vector"
 using namespace std;
 
 class GLSLShader
@@ -10,6 +10,7 @@ class GLSLShader
 public:
 	GLSLShader(void);
 	~GLSLShader(void);
+	void Build(string vertshader,string fragmentshader,vector<string> attribles,vector<string> uniforms);
 	void LoadFromString(GLenum whichShader, const string& source);
 	void LoadFromFile(GLenum whichShader, const string& filename);
 	void CreateAndLinkProgram();

@@ -117,3 +117,22 @@ void GLSLShader::LoadFromFile(GLenum whichShader, const string& filename) {
 		cerr << "Error loading shader: " << filename << endl;
 	}
 }
+
+void GLSLShader::Build(string vertshader, string fragmentshader,vector<string> attribles,vector<string> uniforms) {
+
+	LoadFromFile(GL_VERTEX_SHADER, vertshader);
+	LoadFromFile(GL_FRAGMENT_SHADER, fragmentshader);
+	//compile and link shader
+	CreateAndLinkProgram();
+	Use();
+	for (auto iter = attribles.begin(); iter != attribles.end(); ++iter)
+	{
+		AddAttribute(*iter);
+	}
+	for (auto iter = uniforms.begin(); iter != uniforms.end(); ++iter)
+	{
+		AddUniform(*iter);
+	}
+	UnUse();
+
+}

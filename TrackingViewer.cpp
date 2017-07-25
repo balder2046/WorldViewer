@@ -1,7 +1,7 @@
 #include "TrackingViewer.hpp"
 #include "Terrain.h"
 using namespace TRN;
-Terrain g_Terrain;
+static Terrain g_Terrain;
 static void safe_glutBitmapString(void *font, const char *str) {
     for (size_t x = 0; x < strlen(str); ++x)
         glutBitmapCharacter(font, str[x]);
@@ -330,7 +330,7 @@ void TrackingViewer::redraw() {
     drawRepere();
 	glm::mat4 pv = camera.P * camera.V;
    zed3d.draw(pv);
-	g_Terrain.Draw();
+//	g_Terrain.Draw();
 	
    // printText();
     path_locker.unlock();

@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#include "glm/mat4x4.hpp"
+#include "GL/glew.h"
+#include "GLSLShader.h"
+
 namespace TRN
 {
 	class Patch
@@ -10,7 +14,7 @@ namespace TRN
 		void Draw();
 	public:
 		void Prepare();
-	private:
+	public:
 		int m_iPatchX;
 		int m_iPatchY;
 		int m_iTextureIndex;
@@ -21,9 +25,12 @@ namespace TRN
 	public:
 
 		Terrain();
+		~Terrain();
 	public:
 		void Init();
-		void Draw();
+		void Draw(glm::mat4 viewporj);
+	public:
+		void setTexture(GLuint texid);
 	private:
 		float centerx;
 		float centery;
@@ -36,6 +43,13 @@ namespace TRN
 	public:
 		float getCenterX();
 		float getCenterY();
+	public:
+		GLuint vaoID;
+		GLuint vboID;
+		GLSLShader shader;
+		int m_iXCount;
+		int m_iZCount;
+		std::vector<Patch *> terrainPatchs;
 
 
 	};

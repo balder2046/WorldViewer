@@ -7,11 +7,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "glm/vec4.hpp"
 #include "RenderTextureFBO.h"
 #include "GLSLShader.h"
 #include "ScreenSizeQuad.h"
 #include "Texture.h"
 #include <opencv2/imgcodecs.hpp>
+#include "Terrain.h"
+using namespace TRN;
+using namespace glm;
 
 #define GL_CHECK_ERRORS assert(glGetError()== GL_NO_ERROR);
 
@@ -48,12 +52,14 @@ CScreenSizeQuad *g_pScreenQuad = 0;
 Texture g_Texture1;
 
 GLuint g_testText;
-
+Terrain g_Terrain;
 //OpenGL initialization
 void OnInit() {
 	Mat mat;
 	mat = imread("test.bmp", IMREAD_COLOR);
     glGenTextures(1,&g_testText);
+	g_Terrain.Init();
+	GL_CHECK_ERRORS
     glBindTexture(GL_TEXTURE_2D,g_testText);
     glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,256,256,0,GL_RGB,GL_UNSIGNED_BYTE,0);
 	GL_CHECK_ERRORS
@@ -63,6 +69,7 @@ void OnInit() {
 	g_pScreenQuad = new CScreenSizeQuad();
 	GL_CHECK_ERRORS
 		g_Texture1.FillWithMat(mat);
+	g_Terrain.setTexture(g_Texture1.m_iTextureIndex);
 		//load the shader
 		shader.LoadFromFile(GL_VERTEX_SHADER, "shaders/shader.vert");
 	shader.LoadFromFile(GL_FRAGMENT_SHADER, "shaders/shader.frag");
@@ -147,7 +154,11 @@ void OnResize(int w, int h) {
 //display callback function
 void OnRender() {
 	glActiveTexture(GL_TEXTURE0);
-
+	glm::mat4 matView,matProj;
+	matProj = glm::perspectiveRH(glm::radians(60.0f),1.0f,0.1f,1000.0f);
+	matView = glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));
+	g_Terrain.Draw(matProj * matView);
+/*
 	glEnable(GL_TEXTURE);
     g_pRenderTextureFBO->Use();
 	//clear the colour and depth buffer
@@ -179,7 +190,8 @@ void OnRender() {
 	//g_Texture1.useTexture();
 	g_pScreenQuad->Render(0);
 	//swap front and back buffers to show the rendered result
-	glutSwapBuffers();
+*/
+ glutSwapBuffers();
 }
 
 int mainTestTri(int argc, char** argv) {
