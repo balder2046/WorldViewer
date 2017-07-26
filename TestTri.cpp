@@ -14,6 +14,7 @@
 #include "Texture.h"
 #include <opencv2/imgcodecs.hpp>
 #include "Terrain.h"
+#include "Camera.h"
 using namespace TRN;
 using namespace glm;
 
@@ -22,10 +23,11 @@ using namespace glm;
 
 using namespace std;
 using namespace cv;
+
 //screen size
 const int WIDTH = 800;
 const int HEIGHT = 600;
-
+TrackBallCameraA camera(vec3(0.0f,20.0f,20.0f),vec3(0.0f,0.0f,0.0f));
 //shader reference
 GLSLShader shader;
 
@@ -53,6 +55,99 @@ Texture g_Texture1;
 
 GLuint g_testText;
 Terrain g_Terrain;
+int windowWidth = 0;
+int windowHeight = 0;
+
+bool Rotate = false;
+int startx = 0;
+int starty = 0;
+bool Translate = false;
+bool Zoom = false;
+void mouse(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            Rotate = true;
+            startx = x;
+            starty = y;
+        }
+        if (state == GLUT_UP)
+            Rotate = false;
+    }
+    if (button == GLUT_RIGHT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            Translate = true;
+            startx = x;
+            starty = y;
+        }
+        if (state == GLUT_UP)
+            Translate = false;
+    }
+
+    if (button == GLUT_MIDDLE_BUTTON) {
+        if (state == GLUT_DOWN) {
+            Zoom = true;
+            startx = x;
+            starty = y;
+        }
+        if (state == GLUT_UP)
+            Zoom = false;
+    }
+
+    if ((button == 3) || (button == 4)) {
+        if (state == GLUT_UP) return;
+        if (button == 3)
+            camera.zoom(0.5f);
+        else
+            camera.zoom(-0.5f);
+    }
+}
+
+void motion(int x, int y) {
+    if (Translate) {
+        float Trans_x = (x - startx) / 30.0f;
+        float Trans_y = (y - starty) / 30.0f;
+        vec3 left = camera.getLeft();
+        vec3 up = camera.getUp();
+        camera.translateAll(vec3(left.x * Trans_x, left.y * Trans_x, left.z * Trans_x));
+        camera.translateAll(vec3(up.x * -Trans_y, up.y * -Trans_y, up.z * -Trans_y));
+        startx = x;
+        starty = y;
+    }
+
+    if (Zoom) {
+        camera.zoom((float) (y - starty) / 10.0f);
+        starty = y;
+    }
+
+    if (Rotate) {
+        float sensitivity = 100.0f;
+        float Rot = y - starty;
+        vec3 tmp = camera.getPositionFromLookAt();
+        tmp.y = tmp.x;
+        tmp.x = -tmp.z;
+        tmp.z = tmp.y;
+        tmp.y = 0.0f;
+        tmp = normalize(tmp);
+        camera.rotate(Rot * sensitivity, vect3(tmp.x,tmp.y,tmp.z));
+
+        Rot = x - startx;
+        camera.rotate(-Rot * sensitivity, vect3(0.0f, 1.0f, 0.0f));
+
+        startx = x;
+        starty = y;
+    }
+    glutPostRedisplay();
+}
+
+
+
+
+
+
+
+
+
+
 //OpenGL initialization
 void OnInit() {
 	Mat mat;
@@ -147,16 +242,25 @@ void OnResize(int w, int h) {
 	//set the viewport size
 
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+    windowWidth = w;
+    windowHeight = h;
 	//setup the projection matrix
 	P = glm::ortho(-1, 1, -1, 1);
 }
 
 //display callback function
 void OnRender() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0, 0, 1, 1);
+    glClearDepth(1.0f);
 	glActiveTexture(GL_TEXTURE0);
 	glm::mat4 matView,matProj;
-	matProj = glm::perspectiveRH(glm::radians(60.0f),1.0f,0.1f,1000.0f);
-	matView = glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));
+	matProj = glm::perspectiveRH(glm::radians(75.0f),windowWidth / (float)windowHeight,0.1f,1000.0f);
+
+    camera.applyTransformations();
+    camera.show();
+	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));
+
 	g_Terrain.Draw(matProj * matView);
 /*
 	glEnable(GL_TEXTURE);
@@ -203,6 +307,8 @@ int mainTestTri(int argc, char** argv) {
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("simple1");
 
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
 	//glew initialization
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
