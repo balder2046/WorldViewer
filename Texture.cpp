@@ -7,12 +7,16 @@ using namespace cv;
 Texture::Texture()
 {
 	m_iTextureIndex = 0;
+	m_iWidth = 0;
+	m_iHeight = 0;
 }
 
 void Texture::FillWithMat(const cv::Mat& mat)
 {
 	if (mat.channels() != 3) return;
 	genTexture();
+	m_iWidth = mat.cols;
+	m_iHeight = mat.rows;
 	glBindTexture(GL_TEXTURE_2D, m_iTextureIndex);
 
 	std::vector<unsigned char> vecBuffer;
@@ -32,7 +36,7 @@ void Texture::FillWithMat(const cv::Mat& mat)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols , mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, &vecBuffer[0]);
 	int code = glGetError();
 	char *buf = (char *)gluErrorString(code);
-    printf(buf);
+    printf("%s",buf);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
@@ -46,4 +50,30 @@ void Texture::genTexture()
 {
 	if (m_iTextureIndex == 0)
 	glGenTextures(1, &m_iTextureIndex);
+}
+
+void Texture::DetachTexture() {
+	if (m_iTextureIndex > 0)
+	{
+		glDeleteTextures(1,&m_iTextureIndex);
+		m_iTextureIndex = 0;
+	}
+
+}
+
+void Texture::AttachTexture(GLuint texturename) {
+	DetachTexture();
+	m_iTextureIndex = texturename;
+}
+
+void Texture::SaveToFile(const std::string &filename) {
+
+
+}
+
+void CheckGLError() {
+	int code = glGetError();
+	char *buf = (char *)gluErrorString(code);
+	buf = buf;
+	printf("%s",buf);
 }

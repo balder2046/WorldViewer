@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "GL/glew.h"
+#include "string"
+class Texture;
 class RenderTextureFBO
 {
 public:
@@ -20,4 +22,6 @@ public:
 	void UnUse();
 public:
 	GLint m_size[4];
+public:
+	void SaveTextureToFile(GLuint texturename,const std::string &filename);
 };

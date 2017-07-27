@@ -11,8 +11,16 @@ public:
 public:
 	void FillWithMat(const cv::Mat &mat);
 	void useTexture();
+public:
+	void DetachTexture();
+	void AttachTexture(GLuint texturename);
+public:
+	void SaveToFile(const std::string &filename);
+	void LoadFromFile(const std::string &filename);
 private:
 	void genTexture();
+	int m_iWidth;
+	int m_iHeight;
 };
 
 class RenderTexture : public Texture
@@ -23,3 +31,4 @@ public:
 
 
 };
+void CheckGLError();

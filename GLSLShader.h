@@ -13,6 +13,7 @@ public:
 	void Build(string vertshader,string fragmentshader,vector<string> attribles,vector<string> uniforms);
 	void LoadFromString(GLenum whichShader, const string& source);
 	void LoadFromFile(GLenum whichShader, const string& filename);
+	void SetTexture(const string &varname,int index);
 	void CreateAndLinkProgram();
 	void Use();
 	void UnUse();

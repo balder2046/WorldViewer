@@ -136,3 +136,12 @@ void GLSLShader::Build(string vertshader, string fragmentshader,vector<string> a
 	UnUse();
 
 }
+
+void GLSLShader::SetTexture(const string &varname, int index) {
+	auto iter = _attributeList.find(varname);
+	if (iter == _attributeList.end())
+	{
+		return;
+	}
+	glUniform1i(iter->second,index);
+}

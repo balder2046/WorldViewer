@@ -1,7 +1,8 @@
 ﻿#include "GL/glew.h"
 #include "RenderTextureFBO.h"
 #include "ScreenSizeQuad.h"
-
+#include "ScreenSizeQuad.h"
+#include "opencv2/imgcodecs.hpp"
 RenderTextureFBO::RenderTextureFBO(int width, int height)
 {
 	m_iwidth = width;
@@ -94,4 +95,51 @@ bool RenderTextureFBO::CopyToTexture(GLuint texid)
 	glViewport(size[0], size[1], size[2], size[3]);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     return true;
+}
+
+void RenderTextureFBO::SaveTextureToFile(GLuint texturename, const std::string &filename) {
+	int width = 0;
+	int height = 0;
+	glBindTexture(GL_TEXTURE_2D,texturename);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WIDTH,0,&width);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D,GL_TEXTURE_HEIGHT,0,&height);
+
+#if 0
+	//RenderTextureFBO fbo(width,height);
+	//fbo.Init();
+	//fbo.Use();
+	Use();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearDepth(1.0f);
+	glClearColor(0.0f,1.0f,0.0f,1.0f);
+	g_ScreenQuad->Render(NULL);
+
+	cv::Mat matImage;
+	matImage.create(m_iwidth,m_iheight,CV_8UC3);
+	std::vector<unsigned char> vecBuffer;
+	vecBuffer.resize(m_iwidth * m_iheight * 4);
+	glReadPixels(0,0,m_iwidth,m_iheight,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,&vecBuffer[0]);
+#endif
+
+    cv::Mat matImage;
+    matImage.create(m_iwidth,m_iheight,CV_8UC3);
+    std::vector<unsigned char> vecBuffer;
+    vecBuffer.resize(m_iwidth * m_iheight * 4);
+    glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_BYTE,&vecBuffer[0]);
+	void CheckGLError();
+	CheckGLError();
+	int index = 0;
+	for (int iY = 0; iY < matImage.rows; ++iY)
+	{
+		cv::Vec3b *vecBuf = matImage.ptr<cv::Vec3b>(matImage.rows - iY - 1);
+		for (int iX = 0; iX < matImage.cols;++iX,++index)
+		{
+			vecBuf[iX][0] = vecBuffer[4 * index + 2];
+			vecBuf[iX][1] = vecBuffer[4 * index + 1];
+			vecBuf[iX][2] = vecBuffer[4 * index ];
+		}
+	}
+	cv::imwrite(filename.c_str(),matImage);
+	//fbo.UnUse();
+	UnUse();
 }

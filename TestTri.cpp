@@ -262,7 +262,7 @@ void OnRender() {
 	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));
 
 	g_Terrain.Draw(matProj * matView);
-/*
+
 	glEnable(GL_TEXTURE);
     g_pRenderTextureFBO->Use();
 	//clear the colour and depth buffer
@@ -287,14 +287,16 @@ void OnRender() {
 	g_pRenderTextureFBO->CopyToTexture(g_Texture1.m_iTextureIndex);
 	glBindTexture(GL_TEXTURE_2D, g_Texture1.m_iTextureIndex);
 
-	int code = glGetError();
-	char *buf = (char *)gluErrorString(code);
-	printf(buf);
-
+	static bool bfirst = false;
+	if (!bfirst)
+	{
+		bfirst = true;
+		g_pRenderTextureFBO->SaveTextureToFile(g_Texture1.m_iTextureIndex,"test.png");
+	}
 	//g_Texture1.useTexture();
 	g_pScreenQuad->Render(0);
 	//swap front and back buffers to show the rendered result
-*/
+
  glutSwapBuffers();
 }
 
