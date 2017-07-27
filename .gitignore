@@ -1,4 +1,5 @@
 # CMake settings
+test.png
 cmake-build-*
 .idea
 # Prerequisites
