@@ -28,7 +28,7 @@ const static int NB_DARK_TRIANGLES = 54;
 const static color ALLUMINIUM_COLOR(0.64f, 0.64f, 0.64f);
 const static color DARK_COLOR(0.052218f, 0.052218f, 0.052218f);
 
-const float vertices[] = {
+const float verticesZed[] = {
     -0.068456, -0.016299, 0.016299
     , -0.068456, 0.016299, 0.016299
     , -0.068456, 0.016299, -0.016299
@@ -213,6 +213,9 @@ public:
 	std::vector<sl::Translation> path_mem;
     GLuint vaoID;
     GLuint vboID;
+    GLuint darktriID;
+    GLuint allumtriID;
+
     GLSLShader shader;
 
 };

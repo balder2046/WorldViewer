@@ -15,6 +15,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include "Terrain.h"
 #include "Camera.h"
+#include "ZEDModel.hpp"
 using namespace TRN;
 using namespace glm;
 
@@ -30,6 +31,7 @@ const int HEIGHT = 600;
 TrackBallCameraA camera(vec3(0.0f,20.0f,20.0f),vec3(0.0f,0.0f,0.0f));
 //shader reference
 GLSLShader shader;
+Zed3D g_zed3D;
 
 //vertex array and vertex buffer object IDs
 GLuint vaoID;
@@ -220,7 +222,7 @@ void OnInit() {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndicesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
 	GL_CHECK_ERRORS
-
+    g_zed3D.init();
 		cout << "Initialization successfull" << endl;
 }
 
@@ -259,10 +261,13 @@ void OnRender() {
 
     camera.applyTransformations();
     camera.show();
-	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));
-
+	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));4
+    glm::mat4 matProjView;
+    matProjView = matProj * matView;
+    g_zed3D.draw(matProjView);
 	g_Terrain.Draw(matProj * matView);
-
+	glutSwapBuffers();
+	return;
 	glEnable(GL_TEXTURE);
     g_pRenderTextureFBO->Use();
 	//clear the colour and depth buffer
