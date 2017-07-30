@@ -66,7 +66,6 @@ void Terrain::Init()
 	glBindVertexArray(vaoID);
 	glGenBuffers(1,&vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, vboID);
-
 	TerrainVertex vert[4];
 
 	vert[0].pos = vec3(0.0f, 0.0f, 0.0f);

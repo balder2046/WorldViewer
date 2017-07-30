@@ -40,9 +40,6 @@ void TrackBallCameraA::applyTransformations() {
 }
 
 void TrackBallCameraA::show() {
-    gluLookAt(position.x, position.y, position.z,
-              lookAt.x, lookAt.y, lookAt.z,
-              0.0, 1.0, 0.0);
     V = glm::lookAtRH(glm::tvec3<float>(position.x,position.y,position.z),glm::tvec3<float>(lookAt.x,lookAt.y,
                                                                                             lookAt.z),glm::vec3(up.x,up.y,up.z));
 }

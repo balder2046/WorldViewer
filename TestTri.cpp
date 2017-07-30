@@ -253,19 +253,25 @@ void OnResize(int w, int h) {
 //display callback function
 void OnRender() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glClearColor(0, 0, 1, 1);
     glClearDepth(1.0f);
+	CheckGLError();
 	glActiveTexture(GL_TEXTURE0);
+	CheckGLError();
 	glm::mat4 matView,matProj;
 	matProj = glm::perspectiveRH(glm::radians(75.0f),windowWidth / (float)windowHeight,0.1f,1000.0f);
+	CheckGLError();
 
     camera.applyTransformations();
+	CheckGLError();
     camera.show();
+	CheckGLError();
 	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));4
     glm::mat4 matProjView;
     matProjView = matProj * matView;
     g_zed3D.draw(matProjView);
-	g_Terrain.Draw(matProj * matView);
+	//g_Terrain.Draw(matProj * matView);
 	glutSwapBuffers();
 	return;
 	glEnable(GL_TEXTURE);

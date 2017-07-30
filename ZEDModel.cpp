@@ -28,16 +28,20 @@ void Zed3D::setPath(sl::Transform &Path,std::vector<sl::Translation> path_histor
 void Zed3D::draw(glm::mat4 &pm) {
   //glPushMatrix();
 
+    CheckGLError();
     shader.Use();
-
+  //  glDisableClientState(GL_COLOR_ARRAY);
+  //  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glBindVertexArray(vaoID);
     glBindBuffer(GL_ARRAY_BUFFER,vboID);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,allumtriID);
   //  const GLubyte *buf = gluErrorString(code);
     glUniformMatrix4fv(shader("MVP"), 1, GL_FALSE, glm::value_ptr(pm));
-   // glDrawArrays(GL_TRIANGLES,0,3);
     glDrawElements(GL_TRIANGLES, NB_ALLUMINIUM_TRIANGLES * 3, GL_UNSIGNED_SHORT, 0);
 
+
+    CheckGLError();
     shader.UnUse();
     return;
 
@@ -69,9 +73,9 @@ void Zed3D::init() {
     vertexs.resize(vertcount);
     for (int i = 0; i < vertcount; ++i)
     {
-        vertexs[i].x = verticesZed[3 * i];
-        vertexs[i].y = verticesZed[3 * i + 1];
-        vertexs[i].z = verticesZed[3 * i + 2];
+        vertexs[i].x = verticesZed[3 * i] * 100.0f;
+        vertexs[i].y = verticesZed[3 * i + 1] * 100.0f;
+        vertexs[i].z = verticesZed[3 * i + 2] * 100.0f;
     }
     unsigned int darkcolor,alluminiumcolor;
     darkcolor = glm::packUnorm4x8(glm::vec4(DARK_COLOR.r, DARK_COLOR.g, DARK_COLOR.b,1.0f));
@@ -92,10 +96,13 @@ void Zed3D::init() {
             vertexs[index].color = darkcolor;
         }
     }
-    glBufferData(GL_ARRAY_BUFFER,sizeof(Vertex_t) ,&vertexs[0],GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,sizeof(Vertex_t) * vertexs.size() ,&vertexs[0],GL_STATIC_DRAW);
+    CheckGLError();
 
     glGenBuffers(1,&darktriID);
+    CheckGLError();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,darktriID);
+    CheckGLError();
     std::vector<short> indexs;
     indexs.resize(NB_DARK_TRIANGLES * 3);
     for (int i = 0; i < NB_DARK_TRIANGLES * 3; i++)
@@ -104,7 +111,10 @@ void Zed3D::init() {
 
     }
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(short) * indexs.size(),&indexs[0],GL_STATIC_DRAW);
+    CheckGLError();
     glGenBuffers(1,&allumtriID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,allumtriID);
+    CheckGLError();
 
     indexs.resize(NB_ALLUMINIUM_TRIANGLES * 3);
     for (int i = 0; i < NB_ALLUMINIUM_TRIANGLES * 3; ++i)
@@ -112,6 +122,7 @@ void Zed3D::init() {
         indexs[i] = (short)alluminiumTriangles[i] - 1;
     }
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(short) * indexs.size(), &indexs[0], GL_STATIC_DRAW);
+    CheckGLError();
     shader.LoadFromFile(GL_VERTEX_SHADER, "shaders/shader.vert");
     shader.LoadFromFile(GL_FRAGMENT_SHADER, "shaders/shader.frag");
     //compile and link shader
@@ -122,10 +133,14 @@ void Zed3D::init() {
     shader.AddAttribute("vColor");
     shader.AddUniform("MVP");
     shader.UnUse();
-    glVertexAttribPointer(shader("vVertex"),3,GL_FLOAT,GL_FALSE,sizeof(Vertex_t),(const void *)offsetof(Vertex_t,x));
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex_t),(const void *)offsetof(Vertex_t,x));
+    CheckGLError();
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(shader("vColor"),4,GL_BYTE,GL_TRUE,sizeof(Vertex_t),(const void *)offsetof(Vertex_t,color));
+    CheckGLError();
+    glVertexAttribPointer(1,4,GL_BYTE,GL_TRUE,sizeof(Vertex_t),(const void *)offsetof(Vertex_t,color));
+    CheckGLError();
     glEnableVertexAttribArray(1);
+    CheckGLError();
 
    // setPath(path, path_mem);
 }
