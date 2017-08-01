@@ -26,18 +26,18 @@ void Zed3D::setPath(sl::Transform &Path,std::vector<sl::Translation> path_histor
 }
 
 void Zed3D::draw(glm::mat4 &pm) {
-  //glPushMatrix();
-
     CheckGLError();
     shader.Use();
-  //  glDisableClientState(GL_COLOR_ARRAY);
-  //  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glBindVertexArray(vaoID);
     glBindBuffer(GL_ARRAY_BUFFER,vboID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,darktriID);
+    glUniform4f(shader("ObjColor"),0.0f,1.0f,1.0f,1.0f);
+    glDrawElements(GL_TRIANGLES,NB_DARK_TRIANGLES * 3,GL_UNSIGNED_SHORT,0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,allumtriID);
   //  const GLubyte *buf = gluErrorString(code);
     glUniformMatrix4fv(shader("MVP"), 1, GL_FALSE, glm::value_ptr(pm));
+    glUniform4f(shader("ObjColor"),1.0f,1.0f,1.0f,1.0f);
     glDrawElements(GL_TRIANGLES, NB_ALLUMINIUM_TRIANGLES * 3, GL_UNSIGNED_SHORT, 0);
 
 
@@ -132,6 +132,7 @@ void Zed3D::init() {
     shader.AddAttribute("vVertex");
     shader.AddAttribute("vColor");
     shader.AddUniform("MVP");
+    shader.AddUniform("ObjColor");
     shader.UnUse();
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex_t),(const void *)offsetof(Vertex_t,x));
     CheckGLError();
