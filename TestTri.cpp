@@ -147,11 +147,33 @@ void motion(int x, int y) {
 
 
 
-
+void callback(GLenum source,
+        GLenum type,
+GLuint id,
+        GLenum severity,
+GLsizei length,
+const GLchar *message,
+const void *userParam)
+{
+    printf("info : %s\n",message);
+    if (type == GL_DEBUG_TYPE_ERROR)
+	{
+		printf("error : %s\n",message);
+		assert(false);
+	}
+}
 
 
 //OpenGL initialization
 void OnInit() {
+
+    // Init for Debug
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(&callback, NULL);
+
+    glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+
 	Mat mat;
 	mat = imread("test.bmp", IMREAD_COLOR);
     glGenTextures(1,&g_testText);
@@ -196,7 +218,6 @@ void OnInit() {
 	indices[1] = 1;
 	indices[2] = 2;
 
-	GL_CHECK_ERRORS
 
 		//setup triangle vao and vbo stuff
 		glGenVertexArrays(1, &vaoID);
@@ -209,19 +230,13 @@ void OnInit() {
 	glBindBuffer(GL_ARRAY_BUFFER, vboVerticesID);
 	//pass triangle verteices to buffer object
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
-	GL_CHECK_ERRORS
 		//enable vertex attribute array for position
 		glEnableVertexAttribArray(shader["vVertex"]);
 	glVertexAttribPointer(shader["vVertex"], 3, GL_FLOAT, GL_FALSE, stride, 0);
-	GL_CHECK_ERRORS
 		//enable vertex attribute array for colour
-		glEnableVertexAttribArray(shader["vColor"]);
-	glVertexAttribPointer(shader["vColor"], 3, GL_FLOAT, GL_FALSE, stride, (const GLvoid*)offsetof(Vertex, color));
-	GL_CHECK_ERRORS
 		//pass indices to element array buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndicesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
-	GL_CHECK_ERRORS
     g_zed3D.init();
 		cout << "Initialization successfull" << endl;
 }
@@ -257,17 +272,12 @@ void OnRender() {
 
     glClearColor(0, 0, 1, 1);
     glClearDepth(1.0f);
-	CheckGLError();
 	glActiveTexture(GL_TEXTURE0);
-	CheckGLError();
 	glm::mat4 matView,matProj;
 	matProj = glm::perspectiveRH(glm::radians(75.0f),windowWidth / (float)windowHeight,0.1f,1000.0f);
-	CheckGLError();
 
     camera.applyTransformations();
-	CheckGLError();
     camera.show();
-	CheckGLError();
 	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));4
     glm::mat4 matProjView;
     matProjView = matProj * matView;

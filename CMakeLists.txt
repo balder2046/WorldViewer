@@ -68,7 +68,7 @@ link_directories(${OpenCV_LIBRARY_DIRS})
 
 #FILE(GLOB_RECURSE SRC_FILES "*.cpp")
 set(SRC_FILES TrackingViewer.cpp ZEDModel.cpp main.cpp ShaderProgram.cpp ShaderProgram.h FrameBuffer.cpp GLSLShader.cpp
-        Grid.cpp  Quad.cpp RenderableObject.cpp RenderTextureFBO.cpp ScreenSizeQuad.cpp
+        RenderableObject.cpp RenderTextureFBO.cpp ScreenSizeQuad.cpp
         ShaderProgram.cpp Terrain.cpp TestTri.cpp UnitColorCube.cpp Texture.cpp Camera.cpp Camera.h)
 add_executable(WorldViewer ${SRC_FILES})
 # message(WARNING ${OpenCV_LIBRARIES})

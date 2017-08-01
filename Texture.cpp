@@ -73,7 +73,6 @@ void Texture::SaveToFile(const std::string &filename) {
 
 void CheckGLError() {
 	int code = glGetError();
-    int code2 = glGetError();
 	char *buf = (char *)gluErrorString(code);
 	buf = buf;
 	printf("%s",buf);
