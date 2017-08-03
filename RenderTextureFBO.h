@@ -13,6 +13,7 @@ private:
 	GLuint fboID,depthID, renderTextureID;
 public:
 	bool CopyToTexture(GLuint texid);
+	bool CopyToTexture2(GLuint texid);
 	GLuint getTex()
 	{
 		return renderTextureID;

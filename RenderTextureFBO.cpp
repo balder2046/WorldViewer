@@ -97,6 +97,15 @@ bool RenderTextureFBO::CopyToTexture(GLuint texid)
     return true;
 }
 
+bool RenderTextureFBO::CopyToTexture2(GLuint texid)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fboID);
+	glBindTexture(GL_TEXTURE_2D, texid);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, m_iwidth, m_iheight, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	return true;
+}
+
 void RenderTextureFBO::SaveTextureToFile(GLuint texturename, const std::string &filename) {
 	int width = 0;
 	int height = 0;
