@@ -39,6 +39,14 @@ void Patch::Prepare()
 {
 }
 
+void Patch::SampleTexture() {
+	if (m_iTextureIndex <= 0)
+	{
+		return ;
+	}
+
+}
+
 
 Terrain::Terrain()
 {
@@ -137,48 +145,6 @@ void Terrain::Draw(mat4 viewProj)
 	}
 	shader.UnUse();
 	return;
-	// blend a texture to file
-	GLfloat vPos0[3] = {0.0f,0.0f,0.0f};
-	GLfloat vPos1[3] = { 0.0f,0.0f,1.0f };
-	GLfloat vPos2[3] = { 1.0f,0.0f,1.0f };
-	GLfloat vPos3[3] = { 1.0f,0.0f,0.0f };
-	glm::vec3 vPos[4];
-	vPos[0] = vec3(0.0f, 0.0f, 0.0f);
-	vPos[1] = vec3(0.0f, 0.0f, 1.0f);
-	vPos[2] = vec3(1.0f, 0.0f, 1.0f);
-	vPos[3] = vec3(1.0f, 0.0f, 0.0f);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_TEXTURE_2D);
-	g_Texture.useTexture();
-	for (int i = -10; i < 10; ++i)
-	{
-		for (int j = -10; j < 10; ++j)
-		{	
-			
-			glTranslatef(i, 0, j);
-			glBegin(GL_QUADS);
-			glColor4f(0.1f, 0.5f, 0.9f, 1.0f);
-			glVertex3fv(vPos0);
-			glTexCoord2f(.0, .0f);
-			//glColor4f(0.1f, 0.5f, 0.9f, 1.0f);
-			glVertex3fv(vPos1);
-			glTexCoord2f(.0, 1.0f);
-			//glColor4f(0.1f, 0.5f, 0.9f, 1.0f);
-			glVertex3fv(vPos2);
-			glTexCoord2f(1.0, 1.0f);
-			//glColor4f(0.1f, 0.5f, 0.9f, 1.0f);
-			glVertex3fv(vPos3);
-			glTexCoord2f(1.0, 0.0f);
-			glEnd();
-			glTranslatef(-i, 0, -j);
-			
-		}
-	}
-
-	
-
-	 
 }
 
 void Terrain::toLocalPos(float& x, float& y, float& z)

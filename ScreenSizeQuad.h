@@ -22,4 +22,6 @@ public:
 
 	void Render(const float* MVP);
 };
-
+void InitFullScreenQuad();
+void DrawFullScreenQuad();
+void FiniFullScreenQuad();

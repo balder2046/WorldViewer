@@ -12,6 +12,7 @@ namespace TRN
 
 		Patch(int iPatchX,int iPatchY);
 		void Draw();
+        void SampleTexture();
 	public:
 		void Prepare();
 	public:
