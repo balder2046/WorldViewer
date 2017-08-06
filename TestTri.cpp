@@ -282,7 +282,7 @@ void OnRender() {
     glm::mat4 matProjView;
     matProjView = matProj * matView;
     g_zed3D.draw(matProjView);
-	//g_Terrain.Draw(matProj * matView);
+	g_Terrain.Draw(matProj * matView);
 	glutSwapBuffers();
 	return;
 	glEnable(GL_TEXTURE);

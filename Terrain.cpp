@@ -51,8 +51,11 @@ void Patch::SampleTexture() {
 Terrain::Terrain()
 {
 	centerx = centery = centerz = 0.0f;
+
 	m_fPatchSize = 4;
 	m_iXCount = m_iZCount = 20;
+    m_fTerrainSizeX = m_iXCount * m_fPatchSize;
+    m_fTerrainSizeZ = m_iZCount * m_fPatchSize;
 }
 GLint g_iTexIndex = 0;
 Texture g_Texture;
@@ -63,8 +66,6 @@ struct TerrainVertex
 };
 void Terrain::Init()
 {
-	centerx = 0;
-	centery = 0;
 
 	Mat mat;
 	mat = imread("test.bmp",IMREAD_COLOR);
@@ -125,7 +126,7 @@ void Terrain::Init()
 
 void Terrain::Draw(mat4 viewProj)
 {
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	// first render a big and gray  ground
 	glBindVertexArray(vaoID);
 	shader.Use();
@@ -135,12 +136,12 @@ void Terrain::Draw(mat4 viewProj)
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
 
 
-	glUniform3f(shader("center"),centerx,centery,centerz);
+	glUniform3f(shader("center"),centerx ,centery,centerz);
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
 	{
 		int ix = (*iter)->m_iPatchX;
 		int iy = (*iter)->m_iPatchY;
-		glUniform3f(shader("patchindex"),(*iter)->m_iPatchX * m_fPatchSize,(*iter)->m_iPatchY * m_fPatchSize,m_fPatchSize);
+		glUniform3f(shader("patchindex"),(*iter)->m_iPatchX * m_fPatchSize - m_fTerrainSizeX * 0.5f,(*iter)->m_iPatchY * m_fPatchSize - m_fTerrainSizeZ * 0.5f,m_fPatchSize);
 		(*iter)->Draw();
 	}
 	shader.UnUse();
@@ -187,4 +188,26 @@ void Terrain::setTexture(GLuint texid) {
 		(*iter)->m_iTextureIndex = texid;
 
 	}
+}
+
+void Terrain::SetCenter(float x, float y, float z) {
+	centerx = x;
+	centery = y;
+	centerz = z;
+}
+
+void Terrain::SetPatchSize(float fPatchSize) {
+	m_fPatchSize = fPatchSize;
+	updateTerrainSize();
+}
+
+void Terrain::updateTerrainSize() {
+	m_fTerrainSizeZ = m_iZCount * m_fPatchSize;
+	m_fTerrainSizeX = m_iXCount * m_fPatchSize;
+}
+
+void Terrain::SetPatchNum(int patchX, int patchZ) {
+	m_iXCount = patchX;
+	m_iZCount = patchZ;
+	updateTerrainSize();
 }

@@ -32,12 +32,19 @@ namespace TRN
 		void Draw(glm::mat4 viewporj);
 	public:
 		void setTexture(GLuint texid);
+
+        void SetCenter(float x,float y,float z);
+        void SetPatchSize(float fPatchSize);
+        void SetPatchNum(int patchX,int patchZ);
 	private:
 		float centerx;
 		float centery;
 		float centerz;
 	private:
 		float m_fPatchSize;
+        float m_fTerrainSizeX;
+        float m_fTerrainSizeZ;
+        void updateTerrainSize();
 	public:
 		void toLocalPos(float &x,float &y, float &z);
 		void toWorldPos(float &x, float &y, float &z);

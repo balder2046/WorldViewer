@@ -9,6 +9,7 @@ smooth out vec3 worldpos;
 uniform mat4 viewProj;
 uniform vec3 center;
 uniform vec3 patchindex;
+
 void main()
 {   	
 	//get clipspace position from the object space position
