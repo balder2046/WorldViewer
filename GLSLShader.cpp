@@ -113,6 +113,11 @@ GLuint GLSLShader::operator [](const string& attribute) {
 }
 
 void GLSLShader::AddUniform(const string& uniform) {
+	GLint loc = glGetUniformLocation(_program, uniform.c_str());
+	if (loc == -1)
+	{
+		throw GLSLException("NotFound Uniform ");
+	}
 	_uniformLocationList[uniform] = glGetUniformLocation(_program, uniform.c_str());
 }
 

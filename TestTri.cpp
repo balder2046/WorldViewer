@@ -141,7 +141,12 @@ void motion(int x, int y) {
     glutPostRedisplay();
 }
 
-
+void keydown(unsigned char keycode,
+	int x, int y)
+{
+	printf("the key is trigger %c at (%d,%d)\n", keycode,x,y);
+	return;
+}
 
 
 
@@ -201,7 +206,7 @@ void OnInit() {
 	shader.AddUniform("MVP");
 	shader.UnUse();
 
-	GL_CHECK_ERRORS
+	
 
 		//setup triangle geometry
 		//setup triangle vertices
@@ -333,6 +338,7 @@ int mainTestTri(int argc, char** argv) {
 
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
+	glutKeyboardFunc(keydown);
 	//glew initialization
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
