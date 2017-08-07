@@ -1,5 +1,20 @@
 #include "GLSLShader.h"
 #include <iostream>
+#include <exception>
+class GLSLException : public std::exception
+{
+public:
+	GLSLException(std::string message)
+	{
+		msg = message;
+	}
+	virtual const char* what() const
+	{
+		return msg.c_str();
+	}
+	std::string msg;
+};
+
 
 
 GLSLShader::GLSLShader(void)
@@ -84,6 +99,11 @@ void GLSLShader::UnUse() {
 }
 
 void GLSLShader::AddAttribute(const string& attribute) {
+	GLint loc = glGetAttribLocation(_program, attribute.c_str());
+	if (loc == -1)
+	{
+		throw GLSLException("NotFound Attrib ");
+	}
 	_attributeList[attribute] = glGetAttribLocation(_program, attribute.c_str());
 }
 

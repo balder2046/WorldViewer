@@ -197,7 +197,7 @@ void OnInit() {
 	shader.Use();
 	//add attributes and uniforms
 	shader.AddAttribute("vVertex");
-	shader.AddAttribute("vColor");
+	
 	shader.AddUniform("MVP");
 	shader.UnUse();
 

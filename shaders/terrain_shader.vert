@@ -19,8 +19,9 @@ void main()
 	//get clipspace position from the object space position
 	vec3 pos = vVertex;
 	pos = vec3(pos.x * patchsize,pos.y,pos.z * patchsize ) + patchorigin;
-	gl_Position = viewProj * vec4(pos,1);
-    worldpos = pos;
+	worldpos = pos;
 	//set the object space position as the 2D texture coordinates
 	uv = vUV;
+	gl_Position = viewProj * vec4(pos,1);
+    
 }

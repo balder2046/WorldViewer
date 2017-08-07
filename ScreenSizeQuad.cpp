@@ -11,7 +11,6 @@ CScreenSizeQuad::CScreenSizeQuad(void)
 	shader.CreateAndLinkProgram();
 	shader.Use();
 		shader.AddAttribute("vVertex");
-		shader.AddAttribute("vUV"); 		 
 		shader.AddUniform("textureMap"); 
 		glUniform1i(shader("textureMap"), 0);
 	shader.UnUse();
