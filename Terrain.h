@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "glm/mat4x4.hpp"
+#include "glm/vec3.hpp"
 #include "GL/glew.h"
 #include "GLSLShader.h"
 
@@ -40,6 +41,8 @@ namespace TRN
 		float centerx;
 		float centery;
 		float centerz;
+	public:
+		glm::vec3 GetPatchOrigin(int iPatchX, int iPatchZ);
 	private:
 		float m_fPatchSize;
         float m_fTerrainSizeX;
@@ -48,6 +51,8 @@ namespace TRN
 	public:
 		void toLocalPos(float &x,float &y, float &z);
 		void toWorldPos(float &x, float &y, float &z);
+	public:
+
 	public:
 		float getCenterX();
 		float getCenterY();

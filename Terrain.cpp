@@ -70,7 +70,7 @@ void Terrain::Init()
 	Mat mat;
 	mat = imread("test.bmp",IMREAD_COLOR);
 	g_Texture.FillWithMat(mat);
-	shader.Build("shaders/terrain_shader.vert","shaders/terrain_shader.frag",{"vVertex","vUV"},{"viewProj","center","patchindex","textureMap"});
+	shader.Build("shaders/terrain_shader.vert","shaders/terrain_shader.frag",{"vVertex","vUV"},{"viewProj","patchorigin","patchsize","textureMap"});
 	glGenVertexArrays(1,&vaoID);
 	glBindVertexArray(vaoID);
 	glGenBuffers(1,&vboID);
@@ -134,14 +134,15 @@ void Terrain::Draw(mat4 viewProj)
 	glUniform1i(shader("textureMap"), 0);
 	code = glGetError();
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
-
-
-	glUniform3f(shader("center"),centerx ,centery,centerz);
+	
+	glUniform1f(shader("patchsize"),m_fPatchSize);
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
 	{
 		int ix = (*iter)->m_iPatchX;
 		int iy = (*iter)->m_iPatchY;
-		glUniform3f(shader("patchindex"),(*iter)->m_iPatchX * m_fPatchSize - m_fTerrainSizeX * 0.5f,(*iter)->m_iPatchY * m_fPatchSize - m_fTerrainSizeZ * 0.5f,m_fPatchSize);
+		vec3 patchcenter;
+		patchcenter = GetPatchOrigin(ix, iy);
+		glUniform3fv(shader("patchorigin"), 1,value_ptr(patchcenter));
 		(*iter)->Draw();
 	}
 	shader.UnUse();
@@ -210,4 +211,12 @@ void Terrain::SetPatchNum(int patchX, int patchZ) {
 	m_iXCount = patchX;
 	m_iZCount = patchZ;
 	updateTerrainSize();
+}
+vec3 Terrain::GetPatchOrigin(int iPatchX, int iPatchZ)
+{
+	vec3 patchorigin;
+	patchorigin.x = iPatchX * m_fPatchSize + centerx - m_fTerrainSizeX * 0.5f;
+	patchorigin.y = 0.0;
+	patchorigin.z = iPatchZ * m_fPatchSize + centerz - m_fTerrainSizeZ * 0.5f;
+	return patchorigin;
 }
