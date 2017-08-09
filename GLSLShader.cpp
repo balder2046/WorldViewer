@@ -1,20 +1,7 @@
 #include "GLSLShader.h"
 #include <iostream>
 #include <exception>
-class GLSLException : public std::exception
-{
-public:
-	GLSLException(std::string message)
-	{
-		msg = message;
-	}
-	virtual const char* what() const noexcept
-	{
-		return msg.c_str();
-	}
-	std::string msg;
-};
-
+#include "GLSLException.h"
 
 
 GLSLShader::GLSLShader(void)
@@ -54,6 +41,7 @@ void GLSLShader::LoadFromString(GLenum type, const string& source) {
 		glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog);
 		cerr << "Compile log: " << infoLog << endl;
 		delete[] infoLog;
+
 	}
 	_shaders[_totalShaders++] = shader;
 }
@@ -75,6 +63,7 @@ void GLSLShader::CreateAndLinkProgram() {
 	GLint status;
 	glLinkProgram(_program);
 	glGetProgramiv(_program, GL_LINK_STATUS, &status);
+
 	if (status == GL_FALSE) {
 		GLint infoLogLength;
 
@@ -83,6 +72,7 @@ void GLSLShader::CreateAndLinkProgram() {
 		glGetProgramInfoLog(_program, infoLogLength, NULL, infoLog);
 		cerr << "Link log: " << infoLog << endl;
 		delete[] infoLog;
+        throw GLSLCompileErrorException(infoLog);
 	}
 
 	glDeleteShader(_shaders[VERTEX_SHADER]);
@@ -169,4 +159,8 @@ void GLSLShader::SetTexture(const string &varname, int index) {
 		return;
 	}
 	glUniform1i(iter->second,index);
+}
+
+void GLSLShader::Build(string basename, vector<string> attribles, vector<string> uniforms) {
+	Build(basename + ".vert",basename + ".frag",attribles,uniforms);
 }

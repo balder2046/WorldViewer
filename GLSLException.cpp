@@ -8,11 +8,15 @@ GLSLAttribNotFoundException::GLSLAttribNotFoundException(const char *attribname)
 {
     char szBuf[256];
     snprintf(szBuf,256,"attrib %s not found !",attribname);
-    GLSLException(szBuf);
+    message = szBuf;
 }
 
 GLSLUniformNotFoundException::GLSLUniformNotFoundException(const char *uniformname) {
     char szBuf[256];
     snprintf(szBuf,256,"uniform %s not found !",uniformname);
-    GLSLException(szBuf);
+    message = szBuf;
+}
+
+GLSLCompileErrorException::GLSLCompileErrorException(const std::string &errorstring) {
+    message = errorstring;
 }

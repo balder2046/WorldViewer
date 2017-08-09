@@ -170,12 +170,17 @@ const void *userParam)
 
 
 //OpenGL initialization
+GLSLShader g_shader;
 void OnInit() {
 
     // Init for Debug
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(&callback, NULL);
+	InitFullScreenQuad();
+	vector<string> attrs,uniforms;
+
+    g_shader.Build("shaders/terrain_sampler",attrs,uniforms);
+	glDebugMessageCallback(&callback, NULL);
 
     glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
@@ -273,10 +278,17 @@ void OnResize(int w, int h) {
 //display callback function
 void OnRender() {
     glEnable(GL_DEPTH_TEST);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glClearColor(0, 0, 1, 1);
     glClearDepth(1.0f);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	g_shader.Use();
+	DrawFullScreenQuad();
+	g_shader.UnUse();
+
+	glutSwapBuffers();
+    return;
 	glActiveTexture(GL_TEXTURE0);
 	glm::mat4 matView,matProj;
 	matProj = glm::perspectiveRH(glm::radians(75.0f),windowWidth / (float)windowHeight,0.1f,1000.0f);

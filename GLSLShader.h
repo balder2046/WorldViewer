@@ -10,6 +10,7 @@ class GLSLShader
 public:
 	GLSLShader(void);
 	~GLSLShader(void);
+    void Build(string basename,vector<string> attribles,vector<string> uniforms);
 	void Build(string vertshader,string fragmentshader,vector<string> attribles,vector<string> uniforms);
 	void LoadFromString(GLenum whichShader, const string& source);
 	void LoadFromFile(GLenum whichShader, const string& filename);

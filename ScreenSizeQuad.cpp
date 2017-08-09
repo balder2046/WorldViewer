@@ -104,6 +104,7 @@ void InitFullScreenQuad() {
 	vertices[3].uv = vec2(0,0);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
 	glGenBuffers(1,&g_QuadVIO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,g_QuadVIO);
 	GLushort indices[6];
 
 	int count = 0;
@@ -119,5 +120,20 @@ void InitFullScreenQuad() {
 }
 void DrawFullScreenQuad() {
     glBindVertexArray(g_QuadVAO);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0,2,GL_FLOAT,false,sizeof(ScreenVertex_t),(const void *)offsetof(ScreenVertex_t,pos));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1,2,GL_FLOAT,false,sizeof(ScreenVertex_t),(const void *)offsetof(ScreenVertex_t,uv));
     glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_SHORT,0);
+	glBindVertexArray(0);
+}
+
+void FiniFullScreenQuad() {
+	glDeleteBuffers(1,&g_QuadVIO);
+	g_QuadVIO = 0;
+	glDeleteBuffers(1,&g_QuadVBO);
+	g_QuadVBO = 0;
+	glDeleteBuffers(1,&g_QuadVAO);
+	g_QuadVAO = 0;
 }
