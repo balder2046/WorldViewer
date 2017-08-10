@@ -120,6 +120,8 @@ void InitFullScreenQuad() {
 }
 void DrawFullScreenQuad() {
     glBindVertexArray(g_QuadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, g_QuadVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_QuadVIO);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0,2,GL_FLOAT,false,sizeof(ScreenVertex_t),(const void *)offsetof(ScreenVertex_t,pos));
 

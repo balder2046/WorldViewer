@@ -24,7 +24,7 @@ vec2 GetScreenPosFromWorldPos(vec3 worldpos)
 void main()
 {	
    	vec4 color = vec4(1.0);
-
+	color.rgb = uv.rrr;
 
 
 

@@ -178,6 +178,8 @@ void OnInit() {
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	InitFullScreenQuad();
 	vector<string> attrs,uniforms;
+	attrs.push_back("vVertex");
+	attrs.push_back("vUV");
 
     g_shader.Build("shaders/terrain_sampler",attrs,uniforms);
 	glDebugMessageCallback(&callback, NULL);
@@ -283,6 +285,7 @@ void OnRender() {
     glClearDepth(1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	g_shader.Use();
 	DrawFullScreenQuad();
 	g_shader.UnUse();

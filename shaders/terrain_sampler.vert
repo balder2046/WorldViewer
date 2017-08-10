@@ -21,7 +21,7 @@ vec3 getworldposition(vec3 vertex)
 void main()
 {   	
 	//get clipspace position from the object space position
-	gl_Position = vec4(vVertex,0.5,1);
+	gl_Position = vec4(vVertex,0.0,1);
 	uv = vUV;
     worldpos = getworldposition(vec3(vVertex,0.1));
 
