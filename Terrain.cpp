@@ -52,7 +52,7 @@ Terrain::Terrain()
 {
 	centerx = centery = centerz = 0.0f;
 
-	m_fPatchSize = 4;
+	m_fPatchSize = 8;
 	m_iXCount = m_iZCount = 20;
     m_fTerrainSizeX = m_iXCount * m_fPatchSize;
     m_fTerrainSizeZ = m_iZCount * m_fPatchSize;

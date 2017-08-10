@@ -15,7 +15,7 @@ void main()
 
 	color = texture(textureMap, uv);
 
-	color.rgb += vec3(sqrt(worldpos.x * worldpos.x + worldpos.z * worldpos.z) / 10.0);
+	//color.rgb += vec3(sqrt(worldpos.x * worldpos.x + worldpos.z * worldpos.z) / 10.0);
 
 	//return the average color
     vFragColor = vec4(color.r,color.g,color.b,1.0);

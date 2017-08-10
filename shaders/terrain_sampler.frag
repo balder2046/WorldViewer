@@ -1,5 +1,5 @@
 #version 330 core
- 
+
 layout (location=0) out vec4 vFragColor;	//fragment shader output
 
 //vertex shader input
@@ -24,7 +24,7 @@ vec2 GetScreenPosFromWorldPos(vec3 worldpos)
 void main()
 {	
    	vec4 color = vec4(1.0);
-	color.rgb = uv.rrr;
+	color.rgb = uv.ggg;
 
 
 

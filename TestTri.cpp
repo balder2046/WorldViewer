@@ -189,6 +189,7 @@ void OnInit() {
 	Mat mat;
 	mat = imread("test.bmp", IMREAD_COLOR);
     glGenTextures(1,&g_testText);
+    g_Terrain.SetPatchSize(32.0);
 	g_Terrain.Init();
 	GL_CHECK_ERRORS
     glBindTexture(GL_TEXTURE_2D,g_testText);
@@ -202,53 +203,7 @@ void OnInit() {
 		g_Texture1.FillWithMat(mat);
 	g_Terrain.setTexture(g_Texture1.m_iTextureIndex);
 		//load the shader
-		shader.LoadFromFile(GL_VERTEX_SHADER, "shaders/shader.vert");
-	shader.LoadFromFile(GL_FRAGMENT_SHADER, "shaders/shader.frag");
 	//compile and link shader
-	shader.CreateAndLinkProgram();
-	shader.Use();
-	//add attributes and uniforms
-	shader.AddAttribute("vVertex");
-	
-	shader.AddUniform("MVP");
-	shader.UnUse();
-
-	
-
-		//setup triangle geometry
-		//setup triangle vertices
-		vertices[0].color = glm::vec3(1, 0, 0);
-	vertices[1].color = glm::vec3(0, 1, 0);
-	vertices[2].color = glm::vec3(0, 0, 1);
-
-	vertices[0].position = glm::vec3(-1, -1, 0);
-	vertices[1].position = glm::vec3(0, 1, 0);
-	vertices[2].position = glm::vec3(1, -1, 0);
-
-	//setup triangle indices
-	indices[0] = 0;
-	indices[1] = 1;
-	indices[2] = 2;
-
-
-		//setup triangle vao and vbo stuff
-		glGenVertexArrays(1, &vaoID);
-	glGenBuffers(1, &vboVerticesID);
-	glGenBuffers(1, &vboIndicesID);
-	GLsizei stride = sizeof(Vertex);
-
-	glBindVertexArray(vaoID);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vboVerticesID);
-	//pass triangle verteices to buffer object
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
-		//enable vertex attribute array for position
-		glEnableVertexAttribArray(shader["vVertex"]);
-	glVertexAttribPointer(shader["vVertex"], 3, GL_FLOAT, GL_FALSE, stride, 0);
-		//enable vertex attribute array for colour
-		//pass indices to element array buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndicesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
     g_zed3D.init();
 		cout << "Initialization successfull" << endl;
 }
@@ -256,8 +211,7 @@ void OnInit() {
 //release all allocated resources
 void OnShutdown() {
 	//Destroy shader
-	shader.DeleteShaderProgram();
-	
+
 	//Destroy vao and vbo
 	glDeleteBuffers(1, &vboVerticesID);
 	glDeleteBuffers(1, &vboIndicesID);
@@ -286,12 +240,6 @@ void OnRender() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	g_shader.Use();
-	DrawFullScreenQuad();
-	g_shader.UnUse();
-
-	glutSwapBuffers();
-    return;
 	glActiveTexture(GL_TEXTURE0);
 	glm::mat4 matView,matProj;
 	matProj = glm::perspectiveRH(glm::radians(75.0f),windowWidth / (float)windowHeight,0.1f,1000.0f);
@@ -305,41 +253,7 @@ void OnRender() {
 	g_Terrain.Draw(matProj * matView);
 	glutSwapBuffers();
 	return;
-	glEnable(GL_TEXTURE);
-    g_pRenderTextureFBO->Use();
-	//clear the colour and depth buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//bind the shader
-	shader.Use();
-	glBindVertexArray(vaoID);
-	glEnableVertexAttribArray(shader["vVertex"]);
-	glEnableVertexAttribArray(shader["vColor"]);
-	//pass the shader uniform
-	glUniformMatrix4fv(shader("MVP"), 1, GL_FALSE, glm::value_ptr(P*MV));
-	//drwa triangle
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
-	//unbind the shader
-	shader.UnUse();
-
-	g_pRenderTextureFBO->UnUse();
-
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glClearColor(1, 0, 0, 0);
-	g_pRenderTextureFBO->CopyToTexture(g_Texture1.m_iTextureIndex);
-	glBindTexture(GL_TEXTURE_2D, g_Texture1.m_iTextureIndex);
-
-	static bool bfirst = false;
-	if (!bfirst)
-	{
-		bfirst = true;
-		g_pRenderTextureFBO->SaveTextureToFile(g_Texture1.m_iTextureIndex,"test.png");
-	}
-	//g_Texture1.useTexture();
-	g_pScreenQuad->Render(0);
-	//swap front and back buffers to show the rendered result
-
- glutSwapBuffers();
 }
 
 int mainTestTri(int argc, char** argv) {
