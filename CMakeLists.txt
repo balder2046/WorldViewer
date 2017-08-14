@@ -45,6 +45,10 @@ ELSE() # Linux
     SET(SPECIAL_OS_LIBS "pthread" "X11")
     add_definitions(-std=c++0x -O0 -pthread)
 ENDIF(WIN32)
+## add for glm depth range 0 to 1
+add_definitions(-DGLM_FORCE_DEPTH_ZERO_TO_ONE)
+
+
 set(OpenCV_DIR "/home/ad/work/opencv/build/")
 find_package(OpenCV ${VERSION_REQ_OCV} REQUIRED)
 find_package(CUDA ${VERSION_REQ_CUDA} REQUIRED)

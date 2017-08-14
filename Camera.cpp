@@ -134,3 +134,34 @@ void TrackBallCameraA::setAngleX() {
                              vect3(position.x, position.y, position.z),
                              vect3(lookAt.x, lookAt.y, lookAt.z));
 }
+
+glm::vec2 TrackBallCameraA::GetViewportPosFromScreenPos(int x, int y) {
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    printf("the viewport is (%d,%d,%d,%d)\n",viewport[0],viewport[1],viewport[2],viewport[3]);
+    // x is -1 ,1
+    glm::vec2 pos;
+    pos.x = -1.0f + ((float)x - viewport[0]) / viewport[2] * 2.0f;
+    pos.y = 1.0f - ((float)y - viewport[0]) / (float)viewport[3] * 2.0f;
+    return pos;
+}
+
+void TrackBallCameraA::GetRayFromScreenPos(int x, int y, glm::vec3 &vRayOrg, glm::vec3 &vRayDir) {
+    vRayOrg = position;
+    glm::vec2 viewportpos = GetViewportPosFromScreenPos(x,y);
+    glm::vec4 vPos = vec4(viewportpos,0.0f,1.0f);
+    vPos = vPos * 0.1f;// mul the znear
+    mat4x4 matViewProjInv = glm::inverse(P * V);
+    glm::vec4 vWorldPos = matViewProjInv * vPos;
+    glm::vec3 vTarget = glm::vec3(vWorldPos.x,vWorldPos.y,vWorldPos.z);
+    vRayDir = vTarget - position;
+    printf("position is ()");
+    float len = glm::length(vRayDir);
+    printf("the length is %.2f\n",len);
+    vRayDir = glm::normalize(vRayDir);
+#ifdef GLM_DEPTH_ZERO_TO_ONE
+
+#endif
+
+
+}

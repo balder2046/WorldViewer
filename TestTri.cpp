@@ -71,6 +71,13 @@ void mouse(int button, int state, int x, int y) {
             Rotate = true;
             startx = x;
             starty = y;
+            printf("You Clicked (%d,%d)\n",x,y);
+            vec2 pos;
+            pos = camera.GetViewportPosFromScreenPos(x,y);
+            printf("You Clicked Viewport(%.2f,%.2f)\n",pos.x,pos.y);
+            vec3 vrayorg,vraydir;
+            camera.GetRayFromScreenPos(x,y,vrayorg,vraydir);
+            printf("The ray dir is (%.2f,%.2f,%.2f) \n",vraydir.x,vraydir.y,vraydir.z);
         }
         if (state == GLUT_UP)
             Rotate = false;
@@ -245,6 +252,7 @@ void OnRender() {
 	matProj = glm::perspectiveRH(glm::radians(75.0f),windowWidth / (float)windowHeight,0.1f,1000.0f);
 
     camera.applyTransformations();
+    camera.P = matProj;
     camera.show();
 	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));4
     glm::mat4 matProjView;

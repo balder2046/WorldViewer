@@ -39,7 +39,8 @@ public:
 
     void setPosition(glm::vec3 p);
     void setLookAt(glm::vec3 p);
-
+    glm::vec2 GetViewportPosFromScreenPos(int x,int y);
+    void GetRayFromScreenPos(int x,int y,glm::vec3 &vRayOrg,glm::vec3 &vRayDir);
 private:
     glm::vec3 position;
     glm::vec3 lookAt;
