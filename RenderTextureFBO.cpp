@@ -13,6 +13,13 @@ RenderTextureFBO::RenderTextureFBO(int width, int height)
 		m_size[i] = 0;
 	}
 }
+RenderTextureFBO::RenderTextureFBO() {
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT,viewport);
+	int width = viewport[2];
+	int height = viewport[3];
+	RenderTextureFBO(width,height);
+}
 CScreenSizeQuad *g_ScreenQuad = 0;
 bool RenderTextureFBO::Init()
 {

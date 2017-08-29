@@ -6,20 +6,18 @@ layout (location=0) out vec4 vFragColor;	//fragment shader output
 smooth in vec3 worldpos;
 smooth in vec2 uv;
 //uniform
-uniform mat4 matView;
+uniform mat4 viewProj;
 uniform vec2 f;
 uniform vec2 c;
 uniform sampler2D textureMap;	//texture map
 vec2 GetScreenPosFromWorldPos(vec3 worldpos)
 {
     vec4 pos = vec4(worldpos,1);
-	pos = matView * pos;
-	float x = pos.x / pos.z;
-	float y = pos.y / pos.z;
-	float screenx = x * f.x + c.x;
-	float screeny = y * f.y + c.y;
-	
-	return vec2(0.0,0.0);
+	pos = viewProj * pos;
+	float x = (pos.x / pos.z + 1) * 0.5;
+	float y = (pos.y / pos.z + 1) * 0.5;
+    // x,y in range[0,1]
+	return vec2(x,y);
 }
 void main()
 {	

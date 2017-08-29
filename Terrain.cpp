@@ -220,3 +220,25 @@ vec3 Terrain::GetPatchOrigin(int iPatchX, int iPatchZ)
 	patchorigin.z = iPatchZ * m_fPatchSize + centerz - m_fTerrainSizeZ * 0.5f;
 	return patchorigin;
 }
+
+void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int height) {
+
+	glBindVertexArray(vaoID);
+	shader.Use();
+    glBindTexture(GL_TEXTURE_2D,texid);
+	glUniform1i(shader("textureMap"), 0);
+	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
+
+	glUniform1f(shader("patchsize"),m_fPatchSize);
+	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
+	{
+		int ix = (*iter)->m_iPatchX;
+		int iy = (*iter)->m_iPatchY;
+		vec3 patchcenter;
+		patchcenter = GetPatchOrigin(ix, iy);
+		glUniform3fv(shader("patchorigin"), 1,value_ptr(patchcenter));
+		(*iter)->Draw();
+	}
+	shader.UnUse();
+	return;
+}

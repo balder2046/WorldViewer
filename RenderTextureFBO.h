@@ -6,6 +6,7 @@ class RenderTextureFBO
 {
 public:
 	RenderTextureFBO(int width,int height);
+	RenderTextureFBO();
 public:
 	bool Init();
 private:

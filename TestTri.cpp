@@ -52,11 +52,13 @@ GLushort indices[3];
 glm::mat4  P = glm::mat4(1);
 glm::mat4 MV = glm::mat4(1);
 RenderTextureFBO *g_pRenderTextureFBO = 0;
+RenderTextureFBO *g_pScreenFBO = 0;
 CScreenSizeQuad *g_pScreenQuad = 0;
 Texture g_Texture1;
 
 GLuint g_testText;
 Terrain g_Terrain;
+Terrain g_TerrainSamp;
 int windowWidth = 0;
 int windowHeight = 0;
 
@@ -147,12 +149,32 @@ void motion(int x, int y) {
     }
     glutPostRedisplay();
 }
+void SampleTerrainTexture()
+{
+    glm::mat4 view,proj;
+    view = camera.V;
+    proj = camera.P;
+    glm::mat4 viewproj = view * proj;
+    g_pScreenFBO->Use();
+    g_Terrain.Draw(viewproj);
+    g_pScreenFBO->UnUse();
 
+
+}
 void keydown(unsigned char keycode,
 	int x, int y)
 {
 	printf("the key is trigger %c at (%d,%d)\n", keycode,x,y);
-	return;
+	switch(keycode)
+    {
+        case 's':
+            printf("start to record!\n");
+            SampleTerrainTexture();
+            break;
+        default:
+            break;
+    }
+    return;
 }
 
 
@@ -197,17 +219,21 @@ void OnInit() {
 	mat = imread("test.bmp", IMREAD_COLOR);
     glGenTextures(1,&g_testText);
     g_Terrain.SetPatchSize(32.0);
+    g_TerrainSamp.SetPatchSize(16.0f);
 	g_Terrain.Init();
+    g_TerrainSamp.Init();
 	GL_CHECK_ERRORS
     glBindTexture(GL_TEXTURE_2D,g_testText);
     glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,256,256,0,GL_RGB,GL_UNSIGNED_BYTE,0);
 	GL_CHECK_ERRORS
 	g_pRenderTextureFBO = new RenderTextureFBO(256, 256);
     g_pRenderTextureFBO->Init();
+    g_pScreenFBO = new RenderTextureFBO();
+    g_pScreenFBO->Init();
 	GL_CHECK_ERRORS
 	g_pScreenQuad = new CScreenSizeQuad();
 	GL_CHECK_ERRORS
-		g_Texture1.FillWithMat(mat);
+    g_Texture1.FillWithMat(mat);
 	g_Terrain.setTexture(g_Texture1.m_iTextureIndex);
 		//load the shader
 	//compile and link shader
@@ -223,7 +249,8 @@ void OnShutdown() {
 	glDeleteBuffers(1, &vboVerticesID);
 	glDeleteBuffers(1, &vboIndicesID);
 	glDeleteVertexArrays(1, &vaoID);
-
+    delete g_pRenderTextureFBO;
+    delete g_pScreenFBO;
 	cout << "Shutdown successfull" << endl;
 }
 
@@ -235,6 +262,8 @@ void OnResize(int w, int h) {
     windowWidth = w;
     windowHeight = h;
 	//setup the projection matrix
+
+
 	P = glm::ortho(-1, 1, -1, 1);
 }
 

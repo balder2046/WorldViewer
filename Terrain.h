@@ -31,6 +31,7 @@ namespace TRN
 	public:
 		void Init();
 		void Draw(glm::mat4 viewporj);
+        void SampleTexture(glm::mat4 viewporj,GLuint texid,int width,int height);
 	public:
 		void setTexture(GLuint texid);
 
