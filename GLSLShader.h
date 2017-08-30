@@ -12,6 +12,7 @@ public:
 	~GLSLShader(void);
     void Build(string basename,vector<string> attribles,vector<string> uniforms);
 	void Build(string vertshader,string fragmentshader,vector<string> attribles,vector<string> uniforms);
+	void Fini();
 	void LoadFromString(GLenum whichShader, const string& source);
 	void LoadFromFile(GLenum whichShader, const string& filename);
 	void SetTexture(const string &varname,int index);

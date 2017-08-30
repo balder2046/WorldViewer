@@ -22,6 +22,13 @@ GLSLShader::~GLSLShader(void)
 
 void GLSLShader::DeleteShaderProgram() {
 	glDeleteProgram(_program);
+	_program = 0;
+	for (int i = 0;i < _totalShaders; ++i)
+	{
+		glDeleteShader(_shaders[i]);
+		_shaders[i] = 0;
+	}
+	_totalShaders = 0;
 }
 
 void GLSLShader::LoadFromString(GLenum type, const string& source) {
@@ -163,4 +170,8 @@ void GLSLShader::SetTexture(const string &varname, int index) {
 
 void GLSLShader::Build(string basename, vector<string> attribles, vector<string> uniforms) {
 	Build(basename + ".vert",basename + ".frag",attribles,uniforms);
+}
+void GLSLShader::Fini()
+{
+	DeleteShaderProgram();
 }
