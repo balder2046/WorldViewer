@@ -17,7 +17,7 @@ using namespace glm;
 
 void CPatchSampler::Init()
 {
-	shader.Build("shaders/Terrain_Sampler", {"vVertex","vWorldPos"}, {"viewProj","textureMap"});
+	shader.Build("shaders/terrain_sampler", {"vVertex","vWorldPos"}, {"viewProj","textureMap"});
 	glGenBuffers(1, &vbID);
 	glGenBuffers(1, &ibID);
 	

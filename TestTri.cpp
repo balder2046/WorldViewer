@@ -16,6 +16,7 @@
 #include "Terrain.h"
 #include "Camera.h"
 #include "ZEDModel.hpp"
+#include "RenderDevice.h"
 using namespace TRN;
 using namespace glm;
 
@@ -55,7 +56,7 @@ RenderTextureFBO *g_pRenderTextureFBO = 0;
 RenderTextureFBO *g_pScreenFBO = 0;
 CScreenSizeQuad *g_pScreenQuad = 0;
 Texture g_Texture1;
-
+RenderDevice g_RenderDevice;
 GLuint g_testText;
 Terrain g_Terrain;
 Terrain g_TerrainSamp;
@@ -205,7 +206,8 @@ void OnInit() {
     // Init for Debug
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	InitFullScreenQuad();
+	g_RenderDevice.Init();
+    InitFullScreenQuad();
 	
 	glDebugMessageCallback(&callback, NULL);
 
@@ -247,6 +249,7 @@ void OnShutdown() {
 	glDeleteVertexArrays(1, &vaoID);
     delete g_pRenderTextureFBO;
     delete g_pScreenFBO;
+    g_RenderDevice.Fini();
 	cout << "Shutdown successfull" << endl;
 }
 
@@ -282,12 +285,13 @@ void OnRender() {
 	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));4
     glm::mat4 matProjView;
     matProjView = matProj * matView;
-    
+    g_RenderDevice.SetViewProj(matView,matProj);
 	//g_Terrain.Draw(matProj * matView);
 	
-	g_Terrain.TestDraw(matProjView);
-	
-	g_zed3D.draw(matProjView);
+	//g_Terrain.TestDraw(matProjView);
+	//g_RenderDevice.Draw2DPoint(0.0,0.0,0xff00ff00);
+	g_RenderDevice.Draw3DPoint(0.0,0.0,0.0,0xff00ff00);
+    //g_zed3D.draw(matProjView);
 	glutSwapBuffers();
 	return;
 

@@ -19,7 +19,7 @@ vec2 GetScreenPosFromWorldPos(vec3 worldpos)
 void main()
 {	
 	vec2 uv = GetScreenPosFromWorldPos(worldpos);
-	vec4 sampColor = tex2D(textureMap,uv);
+	vec4 sampColor = texture(textureMap,uv);
     vFragColor = vec4(sampColor.r,sampColor.g,sampColor.b,1.0);
 	
 }

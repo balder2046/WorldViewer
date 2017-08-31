@@ -85,6 +85,10 @@ void GLSLShader::CreateAndLinkProgram() {
 	glDeleteShader(_shaders[VERTEX_SHADER]);
 	glDeleteShader(_shaders[FRAGMENT_SHADER]);
 	glDeleteShader(_shaders[GEOMETRY_SHADER]);
+	for (int i = 0; i < 3; ++i)
+	{
+		_shaders[i] = 0;
+	}
 }
 
 void GLSLShader::Use() {
