@@ -13,40 +13,8 @@ using namespace TRN;
 using namespace cv;
 using namespace glm;
 
-class CPatchSampler
-{
-public:
-	CPatchSampler()
-	{
-		vaoID = 0;
-		vbID = 0;
-		ibID = 0;
-	}
-	void Init();
-	void Fini();
 
-protected:
-	GLuint vaoID;
-	GLuint vbID;
-	GLuint ibID;
-public:
-	// left down ,right down, top right, left top
-	// four positions
-	void SetWorldPositions(vec3 *worldpos);
-	void Draw();
-protected:
-	void UpdateVertexBuffer();
-protected:
-	struct SamplerPos_t
-	{
-		vec2 vertpos;
-		vec3 worldpos;
-	};
-	SamplerPos_t vertbuf[4];
-	GLSLShader shader;
-};
 
-CPatchSampler m_patchSampler;
 void CPatchSampler::Init()
 {
 	shader.Build("shaders/Terrain_Sampler", {"vVertex","vWorldPos"}, {"viewProj","textureMap"});
@@ -57,9 +25,10 @@ void CPatchSampler::Init()
 
 	glGenVertexArrays(1, &vaoID);
 	glBindVertexArray(vaoID);
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibID);
 	GLushort indices[] = {0,1,2,0,2,3};
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(GLushort),indices,GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indices),indices,GL_STATIC_DRAW);
 	
 	// left down ,right down, top right, left top
 	vertbuf[0].vertpos = vec2(-1.0f,-1.0f);
@@ -68,6 +37,12 @@ void CPatchSampler::Init()
 	vertbuf[3].vertpos = vec2(-1.0f, 1.0f);
 	UpdateVertexBuffer();
 
+	// prepare attribe
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(SamplerPos_t), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SamplerPos_t), (const void *)offsetof(SamplerPos_t, worldpos));
+	glBindVertexArray(0);
 	
 
 
@@ -105,16 +80,20 @@ void CPatchSampler::SetWorldPositions(vec3* worldpos)
 
 void CPatchSampler::Draw()
 {
-	glBindVertexArray(vaoID);
-	glBindBuffer(GL_ARRAY_BUFFER,vbID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibID);
+	shader.Use();
+	glBindVertexArray(vaoID);	
+	//glBindBuffer(GL_ARRAY_BUFFER, vbID);
+	
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+	
+	glBindVertexArray(0);
+	shader.UnUse();
 }
 
 void CPatchSampler::UpdateVertexBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vbID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_DYNAMIC_DRAW);
 	
 }
 
@@ -163,6 +142,9 @@ Terrain::Terrain()
 	m_iXCount = m_iZCount = 20;
     m_fTerrainSizeX = m_iXCount * m_fPatchSize;
     m_fTerrainSizeZ = m_iZCount * m_fPatchSize;
+	vboID = 0;
+	iboID = 0;
+	vaoID = 0;
 }
 GLint g_iTexIndex = 0;
 Texture g_Texture;
@@ -204,13 +186,13 @@ void Terrain::Init()
 
 	*id++ = 0; 	*id++ = 1; 	*id++ = 2;
 	*id++ = 0; 	*id++ = 2; 	*id++ = 3;
-	GLuint vboIndicesID = 0;
-	glGenBuffers(1, &vboIndicesID);
+	
+	glGenBuffers(1, &iboID);
 
 
 
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndicesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*6, &indices[0], GL_STATIC_DRAW);
 	//pass triangle verteices to buffer object
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vert), &vert[0], GL_STATIC_DRAW);
@@ -245,10 +227,10 @@ void Terrain::Fini()
 		glDeleteBuffers(1, &vboID);
 		vboID = 0;
 	}
-	if (vboIndicesID > 0)
+	if (iboID > 0)
 	{
-		glDeleteBuffers(1, &vboIndicesID);
-		vbo
+		glDeleteBuffers(1, &iboID);
+		iboID = 0;
 	}
 }
 void Terrain::Draw(mat4 viewProj)
@@ -372,4 +354,8 @@ void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int hei
 	}
 	shader.UnUse();
 	return;
+}
+void Terrain::TestDraw(glm::mat4 viewporj)
+{
+	m_patchSampler.Draw();
 }

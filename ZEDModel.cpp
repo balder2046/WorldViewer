@@ -38,7 +38,7 @@ void Zed3D::draw(glm::mat4 &pm) {
     glUniformMatrix4fv(shader("MVP"), 1, GL_FALSE, glm::value_ptr(pm));
     glUniform4f(shader("ObjColor"),ALLUMINIUM_COLOR.r,ALLUMINIUM_COLOR.g,ALLUMINIUM_COLOR.b,1.0f);
     glDrawElements(GL_TRIANGLES, NB_ALLUMINIUM_TRIANGLES * 3, GL_UNSIGNED_SHORT, 0);
-
+	glBindVertexArray(0);
 
 
     shader.UnUse();
@@ -129,6 +129,6 @@ void Zed3D::init() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1,4,GL_BYTE,GL_TRUE,sizeof(Vertex_t),(const void *)offsetof(Vertex_t,color));
     glEnableVertexAttribArray(1);
-
+	glBindVertexArray(0);
    // setPath(path, path_mem);
 }

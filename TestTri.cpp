@@ -199,18 +199,14 @@ const void *userParam)
 
 
 //OpenGL initialization
-GLSLShader g_shader;
+
 void OnInit() {
 
     // Init for Debug
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	InitFullScreenQuad();
-	vector<string> attrs,uniforms;
-	attrs.push_back("vVertex");
-	attrs.push_back("vUV");
-
-    g_shader.Build("shaders/terrain_sampler",attrs,uniforms);
+	
 	glDebugMessageCallback(&callback, NULL);
 
     glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
@@ -271,7 +267,7 @@ void OnResize(int w, int h) {
 void OnRender() {
     glEnable(GL_DEPTH_TEST);
 
-    glClearColor(0, 0, 1, 1);
+    glClearColor(0, 1, 1, 1);
     glClearDepth(1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -286,8 +282,12 @@ void OnRender() {
 	matView = camera.V;//glm::lookAt(vec3(0.0f,20.0f,0.0f),vec3(0.0f,0.0f,1.0f),vec3(0.0f,1.0f,0.0f));4
     glm::mat4 matProjView;
     matProjView = matProj * matView;
-    g_zed3D.draw(matProjView);
-	g_Terrain.Draw(matProj * matView);
+    
+	//g_Terrain.Draw(matProj * matView);
+	
+	g_Terrain.TestDraw(matProjView);
+	
+	g_zed3D.draw(matProjView);
 	glutSwapBuffers();
 	return;
 

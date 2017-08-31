@@ -9,10 +9,16 @@
 
 class RenderDevice {
 public:
+	RenderDevice();
     void Init();
     void Fini();
     void Draw3DPoint(float x,float y,float z,unsigned long color);
     void Draw2DPoint(float x, float y, unsigned long color);
+private:
+	GLuint point2DVB;
+	GLuint point3DVB;
+	GLuint point2DVao;
+	GLuint point3DVao;
 };
 
 

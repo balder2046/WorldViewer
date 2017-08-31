@@ -99,7 +99,7 @@ void GLSLShader::AddAttribute(const string& attribute) {
 	GLint loc = glGetAttribLocation(_program, attribute.c_str());
 	if (loc == -1)
 	{
-		throw GLSLException("NotFound Attrib ");
+	//	throw GLSLException("NotFound Attrib ");
 	}
 	_attributeList[attribute] = glGetAttribLocation(_program, attribute.c_str());
 }
@@ -113,7 +113,7 @@ void GLSLShader::AddUniform(const string& uniform) {
 	GLint loc = glGetUniformLocation(_program, uniform.c_str());
 	if (loc == -1)
 	{
-		throw GLSLException("NotFound Uniform ");
+//		throw GLSLException("NotFound Uniform ");
 	}
 	_uniformLocationList[uniform] = glGetUniformLocation(_program, uniform.c_str());
 }

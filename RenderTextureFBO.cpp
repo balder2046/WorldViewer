@@ -18,7 +18,14 @@ RenderTextureFBO::RenderTextureFBO() {
 	glGetIntegerv(GL_VIEWPORT,viewport);
 	int width = viewport[2];
 	int height = viewport[3];
-	RenderTextureFBO(width,height);
+	//RenderTextureFBO(width,height);
+	m_iwidth = width;
+	m_iheight = height;
+	fboID = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		m_size[i] = 0;
+	}
 }
 CScreenSizeQuad *g_ScreenQuad = 0;
 bool RenderTextureFBO::Init()

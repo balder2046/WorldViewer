@@ -21,4 +21,5 @@ void main()
 	vec2 uv = GetScreenPosFromWorldPos(worldpos);
 	vec4 sampColor = tex2D(textureMap,uv);
     vFragColor = vec4(sampColor.r,sampColor.g,sampColor.b,1.0);
+	
 }

@@ -21,6 +21,38 @@ namespace TRN
 		int m_iPatchY;
 		int m_iTextureIndex;
 	};
+	class CPatchSampler
+	{
+	public:
+		CPatchSampler()
+		{
+			vaoID = 0;
+			vbID = 0;
+			ibID = 0;
+		}
+		void Init();
+		void Fini();
+
+	protected:
+		GLuint vaoID;
+		GLuint vbID;
+		GLuint ibID;
+	public:
+		// left down ,right down, top right, left top
+		// four positions
+		void SetWorldPositions(glm::vec3 *worldpos);
+		void Draw();
+	protected:
+		void UpdateVertexBuffer();
+	protected:
+		struct SamplerPos_t
+		{
+			glm::vec2 vertpos;
+			glm::vec3 worldpos;
+		};
+		SamplerPos_t vertbuf[4];
+		GLSLShader shader;
+	};
 
 	class Terrain
 	{
@@ -33,6 +65,7 @@ namespace TRN
 		void Fini();
 		void Draw(glm::mat4 viewporj);
         void SampleTexture(glm::mat4 viewporj,GLuint texid,int width,int height);
+		void TestDraw(glm::mat4 viewporj);
 	public:
 		void setTexture(GLuint texid);
 
@@ -61,11 +94,12 @@ namespace TRN
 	public:
 		GLuint vaoID;
 		GLuint vboID;
+		GLuint iboID;
 		GLSLShader shader;
 		int m_iXCount;
 		int m_iZCount;
 		std::vector<Patch *> terrainPatchs;
-
+		CPatchSampler m_patchSampler;
 
 	};
 
