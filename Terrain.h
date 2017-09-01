@@ -65,6 +65,8 @@ namespace TRN
 		void Fini();
 		void Draw(glm::mat4 viewporj);
         void SampleTexture(glm::mat4 viewporj,GLuint texid,int width,int height);
+	public:
+		void TestTransform(glm::mat4 viewproj, glm::vec3 *corners,glm::vec2 *corners2d);
 		void TestDraw(glm::mat4 viewporj);
 	public:
 		void setTexture(GLuint texid);
@@ -78,6 +80,8 @@ namespace TRN
 		float centerz;
 	public:
 		glm::vec3 GetPatchOrigin(int iPatchX, int iPatchZ);
+		// 取四个顶点 ,left-bottom, right-bottom, top-bottom, left-top
+		void GetPatchWorldCorners(int iPatchX, int iPatchZ,glm::vec3 *corners);
 	private:
 		float m_fPatchSize;
         float m_fTerrainSizeX;

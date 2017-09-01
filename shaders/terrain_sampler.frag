@@ -11,8 +11,8 @@ vec2 GetScreenPosFromWorldPos(vec3 worldpos)
 {
     vec4 pos = vec4(worldpos,1);
 	pos = viewProj * pos;
-	float x = (pos.x / pos.z + 1) * 0.5;
-	float y = (pos.y / pos.z + 1) * 0.5;
+	float x = (pos.x / pos.w + 1) * 0.5;
+	float y = 1 - (pos.y / pos.w + 1) * 0.5;
     // x,y in range[0,1]
 	return vec2(x,y);
 }

@@ -33,7 +33,7 @@ TrackBallCameraA camera(vec3(0.0f,20.0f,20.0f),vec3(0.0f,0.0f,0.0f));
 //shader reference
 GLSLShader shader;
 Zed3D g_zed3D;
-
+bool g_bdraw3d = true;
 //vertex array and vertex buffer object IDs
 GLuint vaoID;
 GLuint vboVerticesID;
@@ -172,6 +172,10 @@ void keydown(unsigned char keycode,
             printf("start to record!\n");
             SampleTerrainTexture();
             break;
+		case 't':
+			g_bdraw3d = !g_bdraw3d;
+			glutPostRedisplay();
+			break;
         default:
             break;
     }
@@ -267,10 +271,11 @@ void OnResize(int w, int h) {
 }
 
 //display callback function
+
 void OnRender() {
     glEnable(GL_DEPTH_TEST);
 
-    glClearColor(0, 1, 1, 1);
+    glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -286,11 +291,28 @@ void OnRender() {
     glm::mat4 matProjView;
     matProjView = matProj * matView;
     g_RenderDevice.SetViewProj(matView,matProj);
-	//g_Terrain.Draw(matProj * matView);
-	
+	g_Terrain.Draw(matProj * matView);
+	vec2 corners2d[4];
+	vec3 corners3d[4];
+	g_Terrain.GetPatchWorldCorners(10,10,corners3d);
+	g_Terrain.TestTransform(matProjView, corners3d, corners2d);
 	//g_Terrain.TestDraw(matProjView);
-	//g_RenderDevice.Draw2DPoint(0.0,0.0,0xff00ff00);
-	g_RenderDevice.Draw3DPoint(0.0,0.0,0.0,0xff00ff00);
+	if(g_bdraw3d)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			g_RenderDevice.Draw3DPoint(corners3d[i].x, corners3d[i].y, corners3d[i].z, 0xff00ff00);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			g_RenderDevice.Draw2DPoint(corners2d[i].x, corners2d[i].y, 0xffffff00);
+		}
+	}
+//	g_RenderDevice.Draw2DPoint(0.5,0.9,0xff00ff00);
+	//g_RenderDevice.Draw3DPoint(0.0,0.0,0.0,0xff00ff00);
     //g_zed3D.draw(matProjView);
 	glutSwapBuffers();
 	return;

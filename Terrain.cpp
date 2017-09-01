@@ -17,21 +17,21 @@ using namespace glm;
 
 void CPatchSampler::Init()
 {
-	shader.Build("shaders/terrain_sampler", {"vVertex","vWorldPos"}, {"viewProj","textureMap"});
+	shader.Build("shaders/terrain_sampler", { "vVertex","vWorldPos" }, { "viewProj","textureMap" });
 	glGenBuffers(1, &vbID);
 	glGenBuffers(1, &ibID);
-	
-	 
+
+
 
 	glGenVertexArrays(1, &vaoID);
 	glBindVertexArray(vaoID);
-	
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibID);
-	GLushort indices[] = {0,1,2,0,2,3};
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indices),indices,GL_STATIC_DRAW);
-	
+	GLushort indices[] = { 0,1,2,0,2,3 };
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 	// left down ,right down, top right, left top
-	vertbuf[0].vertpos = vec2(-1.0f,-1.0f);
+	vertbuf[0].vertpos = vec2(-1.0f, -1.0f);
 	vertbuf[1].vertpos = vec2(1.0f, -1.0f);
 	vertbuf[2].vertpos = vec2(1.0f, 1.0f);
 	vertbuf[3].vertpos = vec2(-1.0f, 1.0f);
@@ -43,14 +43,14 @@ void CPatchSampler::Init()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SamplerPos_t), (const void *)offsetof(SamplerPos_t, worldpos));
 	glBindVertexArray(0);
-	
+
 
 
 }
 
 void CPatchSampler::Fini()
 {
-	
+
 	if (vaoID > 0)
 	{
 		glDeleteVertexArrays(1, &vaoID);
@@ -81,11 +81,11 @@ void CPatchSampler::SetWorldPositions(vec3* worldpos)
 void CPatchSampler::Draw()
 {
 	shader.Use();
-	glBindVertexArray(vaoID);	
+	glBindVertexArray(vaoID);
 	//glBindBuffer(GL_ARRAY_BUFFER, vbID);
-	
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
-	
+
 	glBindVertexArray(0);
 	shader.UnUse();
 }
@@ -94,7 +94,7 @@ void CPatchSampler::UpdateVertexBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vbID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_DYNAMIC_DRAW);
-	
+
 }
 
 
@@ -112,8 +112,8 @@ void Patch::Draw()
 		return;
 	}
 
-	glBindTexture(GL_TEXTURE_2D,m_iTextureIndex);
-	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_SHORT, 0);
+	glBindTexture(GL_TEXTURE_2D, m_iTextureIndex);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 	int code = glGetError();
 	const GLubyte  *buf = gluErrorString(code);
 	buf = buf;
@@ -128,7 +128,7 @@ void Patch::Prepare()
 void Patch::SampleTexture() {
 	if (m_iTextureIndex <= 0)
 	{
-		return ;
+		return;
 	}
 
 }
@@ -140,8 +140,8 @@ Terrain::Terrain()
 
 	m_fPatchSize = 8;
 	m_iXCount = m_iZCount = 20;
-    m_fTerrainSizeX = m_iXCount * m_fPatchSize;
-    m_fTerrainSizeZ = m_iZCount * m_fPatchSize;
+	m_fTerrainSizeX = m_iXCount * m_fPatchSize;
+	m_fTerrainSizeZ = m_iZCount * m_fPatchSize;
 	vboID = 0;
 	iboID = 0;
 	vaoID = 0;
@@ -157,24 +157,24 @@ void Terrain::Init()
 {
 	m_patchSampler.Init();
 	Mat mat;
-	mat = imread("test.bmp",IMREAD_COLOR);
+	mat = imread("test.bmp", IMREAD_COLOR);
 	g_Texture.FillWithMat(mat);
-	shader.Build("shaders/terrain_shader.vert","shaders/terrain_shader.frag",{"vVertex","vUV"},{"viewProj","patchorigin","patchsize","textureMap"});
-	glGenVertexArrays(1,&vaoID);
+	shader.Build("shaders/terrain_shader.vert", "shaders/terrain_shader.frag", { "vVertex","vUV" }, { "viewProj","patchorigin","patchsize","textureMap" });
+	glGenVertexArrays(1, &vaoID);
 	glBindVertexArray(vaoID);
-	glGenBuffers(1,&vboID);
+	glGenBuffers(1, &vboID);
 	glBindBuffer(GL_ARRAY_BUFFER, vboID);
-	
-	
+
+
 	TerrainVertex vert[4];
 	vert[0].pos = vec3(0.0f, 0.0f, 0.0f);
 	vert[1].pos = vec3(0.0f, 0.0f, 1.0f);
 	vert[2].pos = vec3(1.0f, 0.0f, 1.0f);
 	vert[3].pos = vec3(1.0f, 0.0f, 0.0f);
-	vert[0].uv = glm::vec2(0.0f,0.0f);
-	vert[1].uv = vec2(0.0f,1.0f);
-	vert[2].uv = vec2(1.0f,1.0f);
-	vert[3].uv = vec2(1.0f,0.0f);
+	vert[0].uv = glm::vec2(0.0f, 0.0f);
+	vert[1].uv = vec2(0.0f, 1.0f);
+	vert[2].uv = vec2(1.0f, 1.0f);
+	vert[3].uv = vec2(1.0f, 0.0f);
 
 
 	GLushort indices[6];
@@ -182,18 +182,18 @@ void Terrain::Init()
 	int count = 0;
 
 	//fill indices array
-	GLushort* id=&indices[0];
+	GLushort* id = &indices[0];
 
 	*id++ = 0; 	*id++ = 1; 	*id++ = 2;
 	*id++ = 0; 	*id++ = 2; 	*id++ = 3;
-	
+
 	glGenBuffers(1, &iboID);
 
 
 
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*6, &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * 6, &indices[0], GL_STATIC_DRAW);
 	//pass triangle verteices to buffer object
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vert), &vert[0], GL_STATIC_DRAW);
 	shader.Use();
@@ -201,14 +201,14 @@ void Terrain::Init()
 	glEnableVertexAttribArray(shader["vVertex"]);
 	glVertexAttribPointer(shader["vVertex"], 3, GL_FLOAT, GL_FALSE, stride, 0);
 	glEnableVertexAttribArray(shader["vUV"]);
-	glVertexAttribPointer(shader["vUV"],2,GL_FLOAT,GL_FALSE,stride,(const void *)offsetof(TerrainVertex,uv));
+	glVertexAttribPointer(shader["vUV"], 2, GL_FLOAT, GL_FALSE, stride, (const void *)offsetof(TerrainVertex, uv));
 
 	shader.UnUse();
 	for (int z = 0; z < m_iZCount; ++z)
 	{
 		for (int x = 0; x < m_iXCount; ++x)
 		{
-			Patch *patch = new Patch(x,z);
+			Patch *patch = new Patch(x, z);
 			terrainPatchs.push_back(patch);
 		}
 	}
@@ -243,15 +243,15 @@ void Terrain::Draw(mat4 viewProj)
 	glUniform1i(shader("textureMap"), 0);
 	code = glGetError();
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
-	
-	glUniform1f(shader("patchsize"),m_fPatchSize);
+
+	glUniform1f(shader("patchsize"), m_fPatchSize);
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
 	{
 		int ix = (*iter)->m_iPatchX;
 		int iy = (*iter)->m_iPatchY;
 		vec3 patchcenter;
 		patchcenter = GetPatchOrigin(ix, iy);
-		glUniform3fv(shader("patchorigin"), 1,value_ptr(patchcenter));
+		glUniform3fv(shader("patchorigin"), 1, value_ptr(patchcenter));
 		(*iter)->Draw();
 	}
 	shader.UnUse();
@@ -339,7 +339,7 @@ void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int hei
 	glBindVertexArray(vaoID);
 	shader.Use();
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,texid);
+	glBindTexture(GL_TEXTURE_2D, texid);
 	glUniform1i(shader("textureMap"), 0);
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
 
@@ -349,7 +349,7 @@ void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int hei
 		int iy = (*iter)->m_iPatchY;
 		vec3 patchcenter;
 		patchcenter = GetPatchOrigin(ix, iy);
-		
+
 		(*iter)->SampleTexture();
 	}
 	shader.UnUse();
@@ -358,4 +358,37 @@ void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int hei
 void Terrain::TestDraw(glm::mat4 viewporj)
 {
 	m_patchSampler.Draw();
+}
+void Terrain::TestTransform(glm::mat4 viewproj, glm::vec3 *corners, glm::vec2 *corners2d)
+{
+	// 取四个顶点 ,left-bottom, right-bottom, top-bottom, left-top
+	
+	
+	bool b3DMode = false;
+	
+	for (int  i = 0;i < 4; i++)
+	{
+		vec4 pos = vec4(corners[i], 1.0f);
+		pos = viewproj * pos;
+
+		float u = (pos.x / pos.w + 1) * 0.5;
+		float v = 1 - (pos.y / pos.w + 1) * 0.5;
+		// transform to 0,1
+		//get the viewport posfrom the uv
+		corners2d[i].x = 2 * u - 1;
+		corners2d[i].y = 1 - 2 * v;
+
+	}
+
+}
+void Terrain::GetPatchWorldCorners(int x,int y,glm::vec3 *corners)
+{
+	// 取四个顶点 ,left-bottom, right-bottom, top-bottom, left-top
+	vec3 patchcenter = GetPatchOrigin(x, y);
+	corners[0] =  patchcenter;
+	corners[1] = glm::vec3(m_fPatchSize, .0, 0.0) + patchcenter;
+	corners[2] = glm::vec3(m_fPatchSize, .0, m_fPatchSize) + patchcenter;
+	corners[3] = glm::vec3(.0f, .0, m_fPatchSize) + patchcenter;
+
+
 }

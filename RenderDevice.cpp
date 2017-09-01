@@ -33,7 +33,7 @@ void RenderDevice::Draw3DPoint(float x, float y, float z, unsigned long color) {
     info.x = x;
     info.y = y;
     info.z = z;
-    info.size = 15.0f;
+    info.size = 5.0f;
     info.color = color;
     glBindBuffer(GL_ARRAY_BUFFER,point3DVB);
     glBufferData(GL_ARRAY_BUFFER,sizeof(Point3DInfo),&info,GL_DYNAMIC_DRAW);
@@ -52,7 +52,7 @@ void RenderDevice::Draw2DPoint(float x, float y, unsigned long color) {
     Point2DInfo info;
     info.x = x;
     info.y = y;
-    info.size = 10.0f;
+    info.size = 5.0f;
     info.color = color;
     glBindBuffer(GL_ARRAY_BUFFER,point2DVB);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Point2DInfo), &info, GL_DYNAMIC_DRAW);
