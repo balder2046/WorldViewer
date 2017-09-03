@@ -14,6 +14,9 @@ public:
     void Fini();
     void Draw3DPoint(float x,float y,float z,unsigned long color);
     void Draw2DPoint(float x, float y, unsigned long color);
+	void DrawTexture(GLuint textureid);
+public:
+	glm::vec2 GetViewportPosFromScreenPos(int x,int y);
 protected:
 	void initPointVBs();
 	void finiPointVBs();

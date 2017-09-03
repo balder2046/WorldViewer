@@ -96,7 +96,17 @@ void CPatchSampler::UpdateVertexBuffer()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_DYNAMIC_DRAW);
 
 }
+void CPatchSampler::Sample(glm::mat4 viewproj, glm::vec3 *worldpos, int texid)
+{
+	shader.Use();
+	glBindVertexArray(vaoID);
+	//glBindBuffer(GL_ARRAY_BUFFER, vbID);
+	SetWorldPositions(worldpos);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 
+	glBindVertexArray(0);
+	shader.UnUse();
+}
 
 Patch::Patch(int iPatchX, int iPatchY)
 {
@@ -357,7 +367,9 @@ void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int hei
 }
 void Terrain::TestDraw(glm::mat4 viewporj)
 {
+	//we try to samle 1
 	m_patchSampler.Draw();
+
 }
 void Terrain::TestTransform(glm::mat4 viewproj, glm::vec3 *corners, glm::vec2 *corners2d)
 {

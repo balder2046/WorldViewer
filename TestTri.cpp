@@ -38,7 +38,8 @@ bool g_bdraw3d = true;
 GLuint vaoID;
 GLuint vboVerticesID;
 GLuint vboIndicesID;
-
+int g_iTestPatchX = 10;
+int g_iTestPatchY = 10;
 //out vertex struct for interleaved attributes
 struct Vertex {
 	glm::vec3 position;
@@ -156,9 +157,12 @@ void SampleTerrainTexture()
     view = camera.V;
     proj = camera.P;
     glm::mat4 viewproj = view * proj;
+	// get current frame 
     g_pScreenFBO->Use();
     g_Terrain.Draw(viewproj);
     g_pScreenFBO->UnUse();
+	GLuint tex = g_pScreenFBO->getTex();
+	
 
 
 }
@@ -174,11 +178,23 @@ void keydown(unsigned char keycode,
             break;
 		case 't':
 			g_bdraw3d = !g_bdraw3d;
-			glutPostRedisplay();
+			break;
+		case 'i':
+			g_iTestPatchY++;
+			break;
+		case 'k':
+			g_iTestPatchY--;
+			break;
+		case 'j':
+			g_iTestPatchX--;
+			break;
+		case 'l':
+			g_iTestPatchX++;
 			break;
         default:
             break;
     }
+	glutPostRedisplay();
     return;
 }
 
@@ -294,7 +310,7 @@ void OnRender() {
 	g_Terrain.Draw(matProj * matView);
 	vec2 corners2d[4];
 	vec3 corners3d[4];
-	g_Terrain.GetPatchWorldCorners(10,10,corners3d);
+	g_Terrain.GetPatchWorldCorners(g_iTestPatchX,g_iTestPatchY,corners3d);
 	g_Terrain.TestTransform(matProjView, corners3d, corners2d);
 	//g_Terrain.TestDraw(matProjView);
 	if(g_bdraw3d)

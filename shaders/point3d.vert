@@ -14,6 +14,7 @@ void main()
 	//assign the per-vertex colour to vSmoothColor varying
 
     gl_Position = MVP*vec4(vVertex,1);
+    gl_Position.z = 0.0;
     gl_PointSize = PointSize;
    vSmoothColor = ObjColor;
    //get the clip space position by multiplying the combined MVP matrix with the object space

@@ -42,6 +42,7 @@ namespace TRN
 		// four positions
 		void SetWorldPositions(glm::vec3 *worldpos);
 		void Draw();
+		void Sample(glm::mat4 viewproj, glm::vec3 *worldpos, int texid);
 	protected:
 		void UpdateVertexBuffer();
 	protected:

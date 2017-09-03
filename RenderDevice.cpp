@@ -5,6 +5,7 @@
 #include "RenderDevice.h"
 
 #include <glm/gtc/type_ptr.hpp>
+using namespace glm;
 RenderDevice::RenderDevice() {
     point2DVB = 0;
     point3DVB = 0;
@@ -105,4 +106,47 @@ void RenderDevice::finiPointVBs() {
         glDeleteVertexArrays(1, &point3DVao);
         point3DVao = 0;
     }
+}
+
+void RenderDevice::DrawTexture(GLuint textureid)
+{
+	glBindTexture(GL_TEXTURE_2D, textureid);
+	GLint texwidth, texheight;
+	texwidth = texheight = 0;
+	// for 0 level mipmap
+	glGetTextureLevelParameteriv(GL_TEXTURE_2D,0, GL_TEXTURE_WIDTH, &texwidth);
+	glGetTextureLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &texheight);
+
+	// get viewport info
+	int viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	int left = viewport[0];
+	int top = viewport[1];
+	int width = viewport[2];
+	int height = viewport[3];
+	int vpcenterx = left + width / 2;
+	int vpcentery = top + height / 2;
+	
+	int drawleft = vpcenterx - texwidth / 2;
+	int drawtop = vpcentery - texheight / 2;
+	int drawright = vpcenterx + texwidth / 2;
+	int drawbottom = vpcentery + texheight / 2;
+	// get the four viewport pos
+
+	// draw rect pos
+}
+
+glm::vec2 RenderDevice::GetViewportPosFromScreenPos(int x, int y)
+{
+	int viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	int left = viewport[0];
+	int top = viewport[1];
+	int width = viewport[2];
+	int height = viewport[3];
+
+	// -1 .. 1
+	float viewportx = ((x - left) / (float)width) * 2.0f - 1.0f;
+	float viewporty = 1.0f - (y - top) / (float)height * 2.0f;
+	return vec2(viewportx, viewporty);
 }
