@@ -4,6 +4,8 @@
 #include "glm/vec3.hpp"
 #include "GL/glew.h"
 #include "GLSLShader.h"
+#include <memory>
+#include "RenderTextureFBO.h"
 
 namespace TRN
 {
@@ -29,8 +31,10 @@ namespace TRN
 			vaoID = 0;
 			vbID = 0;
 			ibID = 0;
+			m_iTexWidth = 0;
+			m_iTexHeight = 0;
 		}
-		void Init();
+		void Init(int texwidth,int texheight);
 		void Fini();
 
 	protected:
@@ -53,6 +57,9 @@ namespace TRN
 		};
 		SamplerPos_t vertbuf[4];
 		GLSLShader shader;
+		int m_iTexWidth;
+		int m_iTexHeight;
+		std::unique_ptr<RenderTextureFBO> m_renderTextureFBO;
 	};
 
 	class Terrain

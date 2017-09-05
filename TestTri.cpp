@@ -313,6 +313,7 @@ void OnRender() {
 	g_Terrain.GetPatchWorldCorners(g_iTestPatchX,g_iTestPatchY,corners3d);
 	g_Terrain.TestTransform(matProjView, corners3d, corners2d);
 	//g_Terrain.TestDraw(matProjView);
+	// blue,green,red,
 	unsigned vertexcolor[] = { 0xffff0000,0xff00ff00,0xff0000ff,0xffffff00 };
 	if(g_bdraw3d)
 	{

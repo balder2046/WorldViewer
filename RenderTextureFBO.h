@@ -9,6 +9,7 @@ public:
 	RenderTextureFBO();
 public:
 	bool Init();
+	void Fini();
 private:
 	int m_iwidth, m_iheight;
 	GLuint fboID,depthID, renderTextureID;

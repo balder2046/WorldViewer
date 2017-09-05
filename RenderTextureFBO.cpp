@@ -76,7 +76,15 @@ bool RenderTextureFBO::Init()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	return true;
 }
-
+void RenderTextureFBO::Fini()
+{
+	glDeleteTextures(1, &renderTextureID);
+	renderTextureID = 0;
+	glDeleteRenderbuffers (1, &depthID);
+	depthID = 0;
+	glDeleteFramebuffers(1, &fboID);
+	fboID = 0;
+}
 
 void RenderTextureFBO::Use()
 {

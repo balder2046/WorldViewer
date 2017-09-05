@@ -9,14 +9,19 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/vec2.hpp"
+#include "RenderTextureFBO.h"
 using namespace TRN;
 using namespace cv;
 using namespace glm;
 
 
 
-void CPatchSampler::Init()
+void CPatchSampler::Init(int texwidth,int texheight)
 {
+	m_iTexWidth = texwidth;
+	m_iTexHeight = texheight;
+	m_renderTextureFBO.reset(new RenderTextureFBO(texwidth, texheight));
+	m_renderTextureFBO->Init();
 	shader.Build("shaders/terrain_sampler", { "vVertex","vWorldPos" }, { "viewProj","textureMap" });
 	glGenBuffers(1, &vbID);
 	glGenBuffers(1, &ibID);
@@ -50,7 +55,11 @@ void CPatchSampler::Init()
 
 void CPatchSampler::Fini()
 {
-
+	if (m_renderTextureFBO)
+	{
+		m_renderTextureFBO->Fini();
+		m_renderTextureFBO.reset(0);
+	}
 	if (vaoID > 0)
 	{
 		glDeleteVertexArrays(1, &vaoID);
@@ -165,7 +174,7 @@ struct TerrainVertex
 };
 void Terrain::Init()
 {
-	m_patchSampler.Init();
+	m_patchSampler.Init(256,256);
 	Mat mat;
 	mat = imread("test.bmp", IMREAD_COLOR);
 	g_Texture.FillWithMat(mat);
@@ -256,8 +265,6 @@ void Terrain::Draw(mat4 viewProj)
 	glUniform1i(shader("textureMap"), 0);
 	code = glGetError();
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
-
-	glUniform1f(shader("patchsize"), m_fPatchSize);
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
 	{
 		int ix = (*iter)->m_iPatchX;
@@ -362,7 +369,9 @@ void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int hei
 		int iy = (*iter)->m_iPatchY;
 		vec3 patchcenter;
 		patchcenter = GetPatchOrigin(ix, iy);
-
+		vec3 corners[4];
+		GetPatchWorldCorners(ix, iy, corners);
+		m_patchSampler.SetWorldPositions(corners);
 		(*iter)->SampleTexture();
 	}
 	shader.UnUse();
@@ -400,10 +409,10 @@ void Terrain::GetPatchWorldCorners(int x,int y,glm::vec3 *corners)
 {
 	// 取四个顶点 ,left-bottom, right-bottom, top-bottom, left-top
 	vec3 patchcenter = GetPatchOrigin(x, y);
-	corners[0] =  patchcenter;
-	corners[1] = glm::vec3(m_fPatchSize, .0, 0.0) + patchcenter;
-	corners[2] = glm::vec3(m_fPatchSize, .0, m_fPatchSize) + patchcenter;
-	corners[3] = glm::vec3(.0f, .0, m_fPatchSize) + patchcenter;
+	corners[0] = glm::vec3(.0f, .0, m_fPatchSize) + patchcenter ;
+	corners[1] = glm::vec3(m_fPatchSize, .0, m_fPatchSize) + patchcenter;
+	corners[2] = glm::vec3(m_fPatchSize, .0, 0.0) + patchcenter;
+	corners[3] = patchcenter;
 
 
 }
