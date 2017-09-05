@@ -178,12 +178,15 @@ void Terrain::Init()
 
 	TerrainVertex vert[4];
 	vert[0].pos = vec3(0.0f, 0.0f, 0.0f);
+	vert[0].uv = glm::vec2(0.0f,0.0f);
+	
 	vert[1].pos = vec3(0.0f, 0.0f, 1.0f);
-	vert[2].pos = vec3(1.0f, 0.0f, 1.0f);
-	vert[3].pos = vec3(1.0f, 0.0f, 0.0f);
-	vert[0].uv = glm::vec2(0.0f, 0.0f);
 	vert[1].uv = vec2(0.0f, 1.0f);
+	
+	vert[2].pos = vec3(1.0f, 0.0f, 1.0f);
 	vert[2].uv = vec2(1.0f, 1.0f);
+
+	vert[3].pos = vec3(1.0f, 0.0f, 0.0f);
 	vert[3].uv = vec2(1.0f, 0.0f);
 
 

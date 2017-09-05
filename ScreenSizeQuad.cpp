@@ -92,13 +92,13 @@ void InitFullScreenQuad() {
 	ScreenVertex_t vertices[4];
 	// for left down
 	vertices[0].pos = vec2(-1,-1);
-	vertices[0].uv = vec2(0,1);
+	vertices[0].uv = vec2(0,0);
 	// right down
 	vertices[1].pos =vec2( 1,-1);
-	vertices[1].uv = vec2(1,1);
+	vertices[1].uv = vec2(1,0);
 	// right top
 	vertices[2].pos =vec2( 1, 1);
-	vertices[2].uv = vec2(1,0);
+	vertices[2].uv = vec2(1,1);
 	// left top
 	vertices[3].pos=	vec2(-1, 1);
 	vertices[3].uv = vec2(0,0);
