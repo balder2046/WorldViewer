@@ -313,20 +313,22 @@ void OnRender() {
 	g_Terrain.GetPatchWorldCorners(g_iTestPatchX,g_iTestPatchY,corners3d);
 	g_Terrain.TestTransform(matProjView, corners3d, corners2d);
 	//g_Terrain.TestDraw(matProjView);
+	unsigned vertexcolor[] = { 0xffff0000,0xff00ff00,0xff0000ff,0xffffff00 };
 	if(g_bdraw3d)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			g_RenderDevice.Draw3DPoint(corners3d[i].x, corners3d[i].y, corners3d[i].z, 0xff00ff00);
+			g_RenderDevice.Draw3DPoint(corners3d[i].x, corners3d[i].y, corners3d[i].z, vertexcolor[i]);
 		}
 	}
 	else
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			g_RenderDevice.Draw2DPoint(corners2d[i].x, corners2d[i].y, 0xffffff00);
+			g_RenderDevice.Draw2DPoint(corners2d[i].x, corners2d[i].y, 0xffff0000);
 		}
 	}
+//	g_RenderDevice.Draw3DPoint(0.0f,0.0f,0.0f, 0xffff0000);
 //	g_RenderDevice.Draw2DPoint(0.5,0.9,0xff00ff00);
 	//g_RenderDevice.Draw3DPoint(0.0,0.0,0.0,0xff00ff00);
     //g_zed3D.draw(matProjView);
