@@ -271,6 +271,7 @@ void Terrain::Draw(mat4 viewProj)
 	shader.Use();
 	int code = glGetError();
 	glUniform1i(shader("textureMap"), 0);
+	glUniform1f(shader("patchsize"), m_fPatchSize);
 	code = glGetError();
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)

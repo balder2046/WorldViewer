@@ -38,8 +38,8 @@ bool g_bdraw3d = true;
 GLuint vaoID;
 GLuint vboVerticesID;
 GLuint vboIndicesID;
-int g_iTestPatchX = 10;
-int g_iTestPatchY = 10;
+int g_iTestPatchX = 1;
+int g_iTestPatchY = 1;
 //out vertex struct for interleaved attributes
 struct Vertex {
 	glm::vec3 position;
@@ -162,7 +162,7 @@ void SampleTerrainTexture()
     g_Terrain.Draw(viewproj);
     g_pScreenFBO->UnUse();
 	GLuint tex = g_pScreenFBO->getTex();
-	
+	g_Terrain.SampleTexture(viewproj, tex, 1, 1);
 
 
 }
