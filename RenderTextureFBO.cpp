@@ -135,23 +135,6 @@ void RenderTextureFBO::SaveTextureToFile(GLuint texturename, const std::string &
 	glGetTexLevelParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WIDTH,0,&width);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D,GL_TEXTURE_HEIGHT,0,&height);
 
-#if 0
-	//RenderTextureFBO fbo(width,height);
-	//fbo.Init();
-	//fbo.Use();
-	Use();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearDepth(1.0f);
-	glClearColor(0.0f,1.0f,0.0f,1.0f);
-	g_ScreenQuad->Render(NULL);
-
-	cv::Mat matImage;
-	matImage.create(m_iwidth,m_iheight,CV_8UC3);
-	std::vector<unsigned char> vecBuffer;
-	vecBuffer.resize(m_iwidth * m_iheight * 4);
-	glReadPixels(0,0,m_iwidth,m_iheight,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,&vecBuffer[0]);
-#endif
-
     cv::Mat matImage;
     matImage.create(m_iwidth,m_iheight,CV_8UC3);
     std::vector<unsigned char> vecBuffer;
@@ -171,6 +154,5 @@ void RenderTextureFBO::SaveTextureToFile(GLuint texturename, const std::string &
 		}
 	}
 	cv::imwrite(filename.c_str(),matImage);
-	//fbo.UnUse();
-	UnUse();
+
 }

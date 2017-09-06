@@ -87,6 +87,22 @@ void CPatchSampler::SetWorldPositions(vec3* worldpos)
 	UpdateVertexBuffer();
 }
 
+void CPatchSampler::PreSample(GLuint texid,const mat4 &viewproj)
+{
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texid);
+	glUniform1i(shader("textureMap"), 0);
+	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, value_ptr(viewproj));
+	glBindVertexArray(vaoID);
+	
+}
+void CPatchSampler::PostSample()
+{
+	glBindVertexArray(0);
+	shader.UnUse();
+}
+
 void CPatchSampler::Draw()
 {
 	shader.Use();
@@ -105,16 +121,15 @@ void CPatchSampler::UpdateVertexBuffer()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_DYNAMIC_DRAW);
 
 }
-void CPatchSampler::Sample(glm::mat4 viewproj, glm::vec3 *worldpos, int texid)
+// texid 将采样的纹理放入texid
+void CPatchSampler::Sample(glm::vec3 *worldpos, int texid)
 {
-	shader.Use();
-	glBindVertexArray(vaoID);
+	m_renderTextureFBO->Use();
 	//glBindBuffer(GL_ARRAY_BUFFER, vbID);
 	SetWorldPositions(worldpos);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
-
-	glBindVertexArray(0);
-	shader.UnUse();
+	m_renderTextureFBO->UnUse();
+	m_renderTextureFBO->CopyToTexture2(texid);
 }
 
 Patch::Patch(int iPatchX, int iPatchY)
@@ -130,7 +145,7 @@ void Patch::Draw()
 	{
 		return;
 	}
-
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_iTextureIndex);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 	int code = glGetError();
@@ -144,13 +159,6 @@ void Patch::Prepare()
 {
 }
 
-void Patch::SampleTexture() {
-	if (m_iTextureIndex <= 0)
-	{
-		return;
-	}
-
-}
 
 
 Terrain::Terrain()
@@ -158,7 +166,7 @@ Terrain::Terrain()
 	centerx = centery = centerz = 0.0f;
 
 	m_fPatchSize = 8;
-	m_iXCount = m_iZCount = 20;
+	m_iXCount = m_iZCount = 2;
 	m_fTerrainSizeX = m_iXCount * m_fPatchSize;
 	m_fTerrainSizeZ = m_iZCount * m_fPatchSize;
 	vboID = 0;
@@ -341,6 +349,12 @@ void Terrain::SetPatchNum(int patchX, int patchZ) {
 	m_iZCount = patchZ;
 	updateTerrainSize();
 }
+Patch *Terrain::GetPatch(int patchx, int patchz)
+{
+	if (patchx < 0 || patchx >= m_iXCount) return 0;
+	if (patchz < 0 || patchz >= m_iZCount) return 0;
+	return terrainPatchs[patchz * m_iXCount + patchx];
+}
 vec3 Terrain::GetPatchOrigin(int iPatchX, int iPatchZ)
 {
 	vec3 patchorigin;
@@ -352,29 +366,39 @@ vec3 Terrain::GetPatchOrigin(int iPatchX, int iPatchZ)
 
 
 
+void Terrain::sampleTextureForPatch(Patch *pPatch)
+{
+	int ix = pPatch->m_iPatchX;
+	int iy = pPatch->m_iPatchY;
+	vec3 patchcenter;
+	patchcenter = GetPatchOrigin(ix, iy);
+	vec3 corners[4];
+	GetPatchWorldCorners(ix, iy, corners);
+	m_patchSampler.SetWorldPositions(corners);
+	m_patchSampler.Sample(corners, pPatch->m_iTextureIndex);
+}
+void Terrain::SampleTexture(glm::mat4 viewporj, GLuint texid, int patchx, int patchz)
+{
+	glBindVertexArray(vaoID);
+	m_patchSampler.PreSample(texid, viewporj);
+	
+	Patch *pPatch = GetPatch(patchx,patchz);
+	sampleTextureForPatch(pPatch);
+	
+	m_patchSampler.PostSample();
 
-
-void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid, int width, int height) {
+}
+void Terrain::SampleTexture(glm::mat4 viewProj, GLuint texid) {
 
 	glBindVertexArray(vaoID);
-	shader.Use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texid);
-	glUniform1i(shader("textureMap"), 0);
-	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
-
+	m_patchSampler.PreSample(texid, viewProj);
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
 	{
-		int ix = (*iter)->m_iPatchX;
-		int iy = (*iter)->m_iPatchY;
-		vec3 patchcenter;
-		patchcenter = GetPatchOrigin(ix, iy);
-		vec3 corners[4];
-		GetPatchWorldCorners(ix, iy, corners);
-		m_patchSampler.SetWorldPositions(corners);
-		(*iter)->SampleTexture();
+		Patch *pPatch = *iter;
+		sampleTextureForPatch(pPatch);
 	}
-	shader.UnUse();
+	m_patchSampler.PostSample();
+	
 	return;
 }
 void Terrain::TestDraw(glm::mat4 viewporj)
@@ -395,8 +419,8 @@ void Terrain::TestTransform(glm::mat4 viewproj, glm::vec3 *corners, glm::vec2 *c
 		vec4 pos = vec4(corners[i], 1.0f);
 		pos = viewproj * pos;
 
-		float u = (pos.x / pos.w + 1) * 0.5;
-		float v = 1 - (pos.y / pos.w + 1) * 0.5;
+		float u = (pos.x / pos.w + 1) * 0.5f;
+		float v = 1 - (pos.y / pos.w + 1) * 0.5f;
 		// transform to 0,1
 		//get the viewport posfrom the uv
 		corners2d[i].x = 2 * u - 1;

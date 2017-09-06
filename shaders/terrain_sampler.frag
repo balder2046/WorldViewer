@@ -20,6 +20,8 @@ void main()
 {	
 	vec2 uv = GetScreenPosFromWorldPos(worldpos);
 	vec4 sampColor = texture(textureMap,uv);
+	if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+		discard;
     vFragColor = vec4(sampColor.r,sampColor.g,sampColor.b,1.0);
 	
 }

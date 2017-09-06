@@ -46,7 +46,10 @@ namespace TRN
 		// four positions
 		void SetWorldPositions(glm::vec3 *worldpos);
 		void Draw();
-		void Sample(glm::mat4 viewproj, glm::vec3 *worldpos, int texid);
+		// texid 待填充的纹理
+		void Sample(glm::vec3 *worldpos, int texid);
+		void PreSample(GLuint texid, const glm::mat4 &viewproj);
+		void PostSample();
 	protected:
 		void UpdateVertexBuffer();
 	protected:
@@ -72,7 +75,10 @@ namespace TRN
 		void Init();
 		void Fini();
 		void Draw(glm::mat4 viewporj);
-        void SampleTexture(glm::mat4 viewporj,GLuint texid,int width,int height);
+        void SampleTexture(glm::mat4 viewporj,GLuint texid);
+		void SampleTexture(glm::mat4 viewporj, GLuint texid,int patchx,int patchz);
+	private:
+		void sampleTextureForPatch(Patch *patch);
 	public:
 		void TestTransform(glm::mat4 viewproj, glm::vec3 *corners,glm::vec2 *corners2d);
 		void TestDraw(glm::mat4 viewporj);
@@ -82,6 +88,7 @@ namespace TRN
         void SetCenter(float x,float y,float z);
         void SetPatchSize(float fPatchSize);
         void SetPatchNum(int patchX,int patchZ);
+		Patch *GetPatch(int patchx, int patchz);
 	private:
 		float centerx;
 		float centery;
