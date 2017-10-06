@@ -253,7 +253,9 @@ void OnInit() {
 	g_pScreenQuad = new CScreenSizeQuad();
 	GL_CHECK_ERRORS
     g_Texture1.FillWithMat(mat);
-	g_Terrain.setTexture(g_Texture1.m_iTextureIndex);
+	//g_Terrain.setTexture(g_Texture1.m_iTextureIndex);
+	//g_Terrain.PreparePatchTextureFromFile("test.bmp");
+	g_Terrain.PreparePatchTextureFromColor(256, 256, 0xff7f7f7f);
 		//load the shader
 	//compile and link shader
     g_zed3D.init();

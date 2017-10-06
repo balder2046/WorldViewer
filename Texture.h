@@ -6,18 +6,22 @@ class Texture
 {
 public:
 	Texture();
+	~Texture();
 public:
 	GLuint m_iTextureIndex;
 public:
 	void FillWithMat(const cv::Mat &mat);
+	void FillWithColor(int width,int height,unsigned int color);
 	void useTexture();
-public:
+	bool LoadFromFile(const std::string &filename);
+	public:
 	void DetachTexture();
 	void AttachTexture(GLuint texturename);
 public:
 	void SaveToFile(const std::string &filename);
-	void LoadFromFile(const std::string &filename);
-private:
+	
+	static GLuint CloneTexture(GLuint texid);
+	private:
 	void genTexture();
 	int m_iWidth;
 	int m_iHeight;

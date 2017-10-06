@@ -325,11 +325,33 @@ Terrain::~Terrain() {
 
 }
 
+void Terrain::PreparePatchTextureFromFile(const std::string & filename)
+{
+	Texture tex;
+	tex.LoadFromFile(filename);
+	preparePatchTextureFromTexture(tex.m_iTextureIndex);
+}
+void Terrain::PreparePatchTextureFromColor(int width, int height, unsigned int color)
+{
+	Texture tex;
+	tex.FillWithColor(width, height, color);
+	preparePatchTextureFromTexture(tex.m_iTextureIndex);
+}
+void Terrain::preparePatchTextureFromTexture(GLuint texid)
+{
+	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
+	{
+		
+		(*iter)->m_iTextureIndex = Texture::CloneTexture(texid);
+
+	}
+}
+
 void Terrain::setTexture(GLuint texid) {
 
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)
 	{
-		(*iter)->m_iTextureIndex = texid;
+		(*iter)->m_iTextureIndex = Texture::CloneTexture(texid);
 
 	}
 }
@@ -413,6 +435,7 @@ void Terrain::TestDraw(glm::mat4 viewporj)
 	m_patchSampler.Draw();
 
 }
+
 void Terrain::TestTransform(glm::mat4 viewproj, glm::vec3 *corners, glm::vec2 *corners2d)
 {
 	// 取四个顶点 ,left-bottom, right-bottom, top-bottom, left-top

@@ -85,6 +85,11 @@ namespace TRN
 		void TestTransform(glm::mat4 viewproj, glm::vec3 *corners,glm::vec2 *corners2d);
 		void TestDraw(glm::mat4 viewporj);
 	public:
+		void PreparePatchTextureFromFile(const std::string &filename);
+		void PreparePatchTextureFromColor(int width,int height,unsigned int color);
+	private:
+		void preparePatchTextureFromTexture(GLuint texid);
+	public:
 		void setTexture(GLuint texid);
 
         void SetCenter(float x,float y,float z);
