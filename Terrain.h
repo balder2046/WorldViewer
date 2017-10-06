@@ -75,8 +75,10 @@ namespace TRN
 		void Init();
 		void Fini();
 		void Draw(glm::mat4 viewporj);
-        void SampleTexture(glm::mat4 viewporj,GLuint texid);
-		void SampleTexture(glm::mat4 viewporj, GLuint texid,int patchx,int patchz);
+		// texid 从opengl 得到当前采集到图像的纹理
+		// viewproj 当前的投影矩阵
+        void SampleTexture(glm::mat4 viewproj,GLuint texid);
+		void SampleTexture(glm::mat4 viewproj, GLuint texid,int patchx,int patchz);
 	private:
 		void sampleTextureForPatch(Patch *patch);
 	public:
@@ -97,10 +99,15 @@ namespace TRN
 		glm::vec3 GetPatchOrigin(int iPatchX, int iPatchZ);
 		// 取四个顶点 ,left-bottom, right-bottom, top-bottom, left-top
 		void GetPatchWorldCorners(int iPatchX, int iPatchZ,glm::vec3 *corners);
+		void SetFlipY(bool flip)
+		{
+			m_bFlipY = flip;
+		}
 	private:
 		float m_fPatchSize;
         float m_fTerrainSizeX;
         float m_fTerrainSizeZ;
+		bool m_bFlipY;
         void updateTerrainSize();
 	public:
 		void toLocalPos(float &x,float &y, float &z);

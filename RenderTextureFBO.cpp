@@ -94,12 +94,16 @@ void RenderTextureFBO::Use()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
 	//render to colour attachment 0
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glClearColor(1.0f, 1.0f, .0f, 1.0f);
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 }
 void RenderTextureFBO::UnUse()
 {
 	glViewport(m_size[0],m_size[1],m_size[2],m_size[3]);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glDrawBuffer(GL_BACK_LEFT);
+
 }
 bool RenderTextureFBO::CopyToTexture(GLuint texid)
 {
@@ -132,14 +136,14 @@ void RenderTextureFBO::SaveTextureToFile(GLuint texturename, const std::string &
 	int width = 0;
 	int height = 0;
 	glBindTexture(GL_TEXTURE_2D,texturename);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WIDTH,0,&width);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D,GL_TEXTURE_HEIGHT,0,&height);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH,&width);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_HEIGHT,&height);
 
     cv::Mat matImage;
     matImage.create(m_iwidth,m_iheight,CV_8UC3);
     std::vector<unsigned char> vecBuffer;
     vecBuffer.resize(m_iwidth * m_iheight * 4);
-    glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_BYTE,&vecBuffer[0]);
+    glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,&vecBuffer[0]);
 	void CheckGLError();
 	CheckGLError();
 	int index = 0;
@@ -148,9 +152,11 @@ void RenderTextureFBO::SaveTextureToFile(GLuint texturename, const std::string &
 		cv::Vec3b *vecBuf = matImage.ptr<cv::Vec3b>(matImage.rows - iY - 1);
 		for (int iX = 0; iX < matImage.cols;++iX,++index)
 		{
+			
 			vecBuf[iX][0] = vecBuffer[4 * index + 2];
 			vecBuf[iX][1] = vecBuffer[4 * index + 1];
 			vecBuf[iX][2] = vecBuffer[4 * index ];
+
 		}
 	}
 	cv::imwrite(filename.c_str(),matImage);

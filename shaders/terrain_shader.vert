@@ -9,6 +9,7 @@ smooth out vec3 worldpos;
 uniform mat4 viewProj;
 uniform float patchsize;
 uniform vec3 patchorigin;
+uniform bool flipy;
 
 vec3 getworldposition(vec3 vertex)
 {
@@ -22,6 +23,10 @@ void main()
 	worldpos = pos;
 	//set the object space position as the 2D texture coordinates
 	uv = vUV;
+	if (flipy)
+	{
+		uv.y = 1.0 - uv.y;
+	}
 	gl_Position = viewProj * vec4(pos,1);
     
 }

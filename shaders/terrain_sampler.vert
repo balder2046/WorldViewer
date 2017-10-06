@@ -10,7 +10,7 @@ smooth out vec3 worldpos;
 void main()
 {   	
 	//get clipspace position from the object space position
-	gl_Position = vec4(vVertex,0.999999,1);
+	gl_Position = vec4(vVertex,0.0,1);
 
     worldpos = vWorldPos;
 

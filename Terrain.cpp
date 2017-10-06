@@ -126,10 +126,14 @@ void CPatchSampler::Sample(glm::vec3 *worldpos, int texid)
 {
 	m_renderTextureFBO->Use();
 	//glBindBuffer(GL_ARRAY_BUFFER, vbID);
+	glClearColor(0.0f,0.0f,0.0f,1.0f);
+	glClearDepth(1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	SetWorldPositions(worldpos);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 	m_renderTextureFBO->UnUse();
 	m_renderTextureFBO->CopyToTexture2(texid);
+	m_renderTextureFBO->SaveTextureToFile(texid, "result.png");
 }
 
 Patch::Patch(int iPatchX, int iPatchY)
@@ -272,6 +276,7 @@ void Terrain::Draw(mat4 viewProj)
 	int code = glGetError();
 	glUniform1i(shader("textureMap"), 0);
 	glUniform1f(shader("patchsize"), m_fPatchSize);
+	glUniform1i(shader("flipy"), m_bFlipY);
 	code = glGetError();
 	glUniformMatrix4fv(shader("viewProj"), 1, GL_FALSE, glm::value_ptr(viewProj));
 	for (auto iter = terrainPatchs.begin(); iter != terrainPatchs.end(); ++iter)

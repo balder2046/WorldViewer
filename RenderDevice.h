@@ -37,6 +37,10 @@ private:
 	GLuint point3DVB;
 	GLuint point2DVao;
 	GLuint point3DVao;
+	GLuint textureVB;
+	GLuint textureVao;
+	GLuint textureIB;
+
 private:
 	GLSLShader point2DShader;
 	GLSLShader point3DShader;

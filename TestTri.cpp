@@ -156,13 +156,14 @@ void SampleTerrainTexture()
     glm::mat4 view,proj;
     view = camera.V;
     proj = camera.P;
-    glm::mat4 viewproj = view * proj;
+    glm::mat4 viewproj = proj * view;
 	// get current frame 
     g_pScreenFBO->Use();
     g_Terrain.Draw(viewproj);
     g_pScreenFBO->UnUse();
 	GLuint tex = g_pScreenFBO->getTex();
 	g_Terrain.SampleTexture(viewproj, tex, 1, 1);
+	g_Terrain.SetFlipY(true);
 
 
 }
@@ -239,7 +240,7 @@ void OnInit() {
     g_Terrain.SetPatchSize(32.0);
     g_TerrainSamp.SetPatchSize(16.0f);
 	g_Terrain.Init();
-    g_TerrainSamp.Init();
+   // g_TerrainSamp.Init();
 	GL_CHECK_ERRORS
     glBindTexture(GL_TEXTURE_2D,g_testText);
     glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,256,256,0,GL_RGB,GL_UNSIGNED_BYTE,0);

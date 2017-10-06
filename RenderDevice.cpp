@@ -11,6 +11,9 @@ RenderDevice::RenderDevice() {
     point3DVB = 0;
     point2DVao = 0;
     point3DVao = 0;
+	textureIB = 0;
+	textureVB = 0;
+	textureVao = 0;
 }
 
 void RenderDevice::Init() {
@@ -18,6 +21,9 @@ void RenderDevice::Init() {
     point2DShader.Build("shaders/point2d",{},{});
     point3DShader.Build("shaders/point3d",{},{"MVP"});
     initPointVBs();
+	//glGenVertexArrays(1, &textureVao);
+	//glBindVertexArray(textureVao);
+	
 }
 
 void RenderDevice::Fini() {
